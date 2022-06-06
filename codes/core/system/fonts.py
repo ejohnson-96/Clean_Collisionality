@@ -1,7 +1,5 @@
-import os
 from matplotlib import font_manager
-from core.variables import char_man as cm
-from core.variables import string_man as sm
+from codes.core.variables import char_man as cm
 
 
 def list_fonts(

@@ -1,4 +1,4 @@
-from core.variables import string_man as sm
+from codes.core.variables import string_man as sm
 
 
 def capital_first_letter(

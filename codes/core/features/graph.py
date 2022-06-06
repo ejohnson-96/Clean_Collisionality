@@ -1,9 +1,9 @@
-from core.constants import const
+from codes.core.constants import const
 import matplotlib.pyplot as plt
 import random
 import numpy as np
 import warnings
-from core.variables import char_man as cm
+from codes.core.variables import char_man as cm
 
 
 def graph(
