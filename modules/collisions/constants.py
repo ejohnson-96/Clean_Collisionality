@@ -1,46 +1,45 @@
 import numpy as np
-from core.rw import file_dir as fd
+from modules.core.rw import file_dir as fd
 
 
-def sys_dir(
-        enc,
+def enc(
+        encount,
         valid_enc,
 ):
-    sys_dir.path = fd.dir_path()
-    str_load = str(sys_dir.path + "/data/load/")
-    str_save = str(sys_dir.path + "/data/save/")
+    enc.path = fd.dir_path()
+    enc.str_load = str(enc.path + "/data/load/")
+    enc.str_save = str(enc.path + "/data/save/")
 
-    if enc == 0:
+    if encount == 0:
         L = len(valid_enc)
-        encounter = []
+        enc.encounter = []
         for i in range(L):
-            encounter[i] = valid_enc[i]
-            encounter.append('E' + str(int(encounter[i])))
+            enc.encounter[i] = valid_enc[i]
+            enc.encounter.append('E' + str(int(enc.encounter[i])))
     else:
         L = 1
-        encounter = []
-        encounter.append('E' + str(enc))
-    num_of_encs = L
-    encounter_names = []
-    encounter_errors = []
+        enc.encounter = []
+        enc.encounter.append('E' + str(encount))
+    enc.num_of_encs = L
+    enc.encounter_names = []
+    enc.encounter_errors = []
 
     for i in range(L):
-        val = (encounter[i])
-        encounter_names.append(val + '_protons.csv')
-        encounter_names.append(val + '_alphas.csv')
-        encounter_errors.append(val + '_proton_errors.csv')
-        encounter_errors.append(val + '_alpha_errors.csv')
+        val_ = (enc.encounter[i])
+        enc.encounter_names.append(val_ + '_protons.csv')
+        enc.encounter_names.append(val_ + '_alphas.csv')
+        enc.encounter_errors.append(val_ + '_proton_errors.csv')
+        enc.encounter_errors.append(val_ + '_alpha_errors.csv')
 
-    sc_names = []
-    sc_names.append('PSP.csv')
-    sc_names.append('Wind_Orbit.csv')
-    sc_names.append('PSP_Orbit.csv')
-    sc_names.append('Wind_Outside_Range_Hour.csv')
-    sc_names.append('Wind_Outside_Range_Min.csv')
-    sc_names.append('Wind_Temps.csv')
+    enc.sc_names = []
+    enc.sc_names.append('PSP.csv')
+    enc.sc_names.append('Wind_Orbit.csv')
+    enc.sc_names.append('PSP_Orbit.csv')
+    enc.sc_names.append('Wind_Outside_Range_Hour.csv')
+    enc.sc_names.append('Wind_Outside_Range_Min.csv')
+    enc.sc_names.append('Wind_Temps.csv')
 
-    num_of_sc = len(sc_names)
-
+    num_of_sc = len(enc.sc_names)
 
     return
 
@@ -48,6 +47,4 @@ def sys_dir(
 def constants(
 
 ):
-
-
     return
