@@ -1,6 +1,8 @@
 from core.time import tictoc as stopwatch
 from core.constants import initialise_constants
+
 from constants import *
+from features import user_input as usr_int
 
 stopwatch.start_time()
 initialise_constants()
@@ -26,12 +28,14 @@ while h >0:
         g = 1
         while g > 0:
             enc_input = input('Please enter an encounter:')
-
-            if enc_input in valid_enc:
-                enc = enc_input
-                g = 0
-            elif enc_input == '':
-                print('Error: No input provided.')
+            if usr_int.check_user_input(enc_input):
+                if int(enc_input) in valid_enc:
+                    enc = enc_input
+                    g = 0
+                elif enc_input == '':
+                    print('Error: No input provided.')
+                else:
+                    print('Error: No coresponding encounter available.')
             else:
                 print('Error: Argument provided is not valid,'
                       f' argument {enc_input}, is of type {type(enc_input)}.')
