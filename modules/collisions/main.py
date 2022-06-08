@@ -2,7 +2,8 @@ from modules.core.time import tictoc as stopwatch
 from modules.core.constants import initialise_constants
 
 from constants import *
-from modules.core.system import users as usr
+from modules.core.system import input as inpt
+from modules.collisions.loadsave import loadsave as rw
 
 stopwatch.start_time()
 initialise_constants()
@@ -28,7 +29,7 @@ while h >0:
         g = 1
         while g > 0:
             enc_input = input('Please enter an encounter:')
-            if usr.check_user_input(enc_input):
+            if inpt.validate_input_number(enc_input):
                 if int(enc_input) in valid_enc:
                     encount = enc_input
                     g = 0
@@ -44,6 +45,10 @@ while h >0:
 
 # Generate directory strings for encounters
 enc(encount, valid_enc)
+
+mm_data = rw.encounter_import()
+error_data = rw.error_import()
+sc_data = rw.sc_import()
 
 
 

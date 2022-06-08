@@ -34,14 +34,6 @@ def sc_import(
     return files
 
 
-def epoch_time(
-        epoch_time,
-):
-    import datetime
-    res = datetime.datetime.fromtimestamp(epoch_time)
-
-    return res
-
 
 def error_import(
 
