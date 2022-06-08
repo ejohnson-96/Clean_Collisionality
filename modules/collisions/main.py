@@ -4,6 +4,7 @@ from modules.core.constants import initialise_constants
 from constants import *
 from modules.core.system import input as inpt
 from modules.collisions.loadsave import loadsave as rw
+from modules.collisions.features import scrub as scrub, lat_lon as lat_lon
 from modules.core.variables import num_man as nm
 
 stopwatch.start_time()
@@ -53,7 +54,7 @@ mm_data = rw.encounter_import(encount, valid_enc, error_files)
 if error_files:
     error_data = rw.error_import()
 sc_data = rw.sc_import()
-print('Data import sucessful.')
+print('\nData import sucessful.\n')
 
 # Generate equal sized arays for all data
 
@@ -123,10 +124,17 @@ for particle in particle_list:
     solar_data[particle] = {}
     errors[particle] = {}
 
-for z in mm_data[encout][enc.encounter_names[0]].keys():
-    solar_data[p][z] = []
-for z in mm_data[encount][enc.encounter_names[1]].keys():
-    solar_data[a][z] = []
+for x in range(1):
+    encount = enc.encounter[x]
+    for y in range(1):
+        for particle in particle_list:
+            indx = particle_list.index(particle)
+            if nm.is_even(indx):
+                arg_x_ = 0
+            elif nm.is_odd(indx):
+                arg_x_ = 1
+            for z in mm_data[encount][enc.encounter_names[0 + arg_x_]].keys():
+                solar_data[particle][z] = []
 
 if error_files:
     for z in error_data[encount][enc.encounter_names[0]].keys():
@@ -137,18 +145,39 @@ if error_files:
 for y in range(len(enc.sc_names)):
     spc_data[enc.sc_names[y]] = {}
     for z in sc_data[encount][enc.sc_names[y]].keys():
-        spc_data[enc.enc.sc_names[y]][z] = []
+        spc_data[enc.sc_names[y]][z] = []
 
 for x in range(enc.num_of_encs):
-    encout = enc.encounter[0]
+    encount = enc.encounter[0]
     for particle in particle_list:
+        indx = particle_list.index(particle)
+        if nm.is_even(indx):
+            arg_x_ = 0
+        elif nm.is_odd(indx):
+            arg_x_ = 1
         for z in solar_data[particle].keys():
-            for w in range(len(mm_data[encount][enc.encounter_names[2*x]][z])):
-                if nm.is_even
+            for w in range(len(mm_data[encount][enc.encounter_names[2*x + arg_x_]][z])):
                 solar_data[particle][z].append(mm_data[encount][enc.encounter_names[2*x + arg_x_]][z][w])
 
+print('Scrubbing data...')
+solar_data, errors, spc_data = scrub.scrub_data(solar_data, errors, spc_data)
+
+spc_data[enc.sc_names[0]] = lat_lon.latlong_psp(spc_data[enc.sc_names[0]])
+spc_data[enc.sc_names[1]] = lat_lon.latlong_wind(spc_data[enc.sc_names[1]])
+
+# Generate temperatures and velocity magnitudes
+print('Generating velocity magnitudes and temperature file... \n')
+scalar_velocity = sc_gen.scalar_velocity(solar_data)
+psp_scalar_temps, wind_scalar_temps = sc_gen.scalar_temps(solar_data, spc_data)
+
+# Generate single time set for the whole data set in appropriate unit
+solar_data[t] = []
+for i in range(len(solar_data[p]['time'])):
+    solar_data[t].append(df.epoch_time(solar_data[p]['time'][i]))
+print('Note: Files have been generated and loaded in.', '\n')
 
 
+print(solar_data[p].keys())
 
 
 
