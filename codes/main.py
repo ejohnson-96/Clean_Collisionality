@@ -21,7 +21,7 @@ h = 1
 while h >0:
     data_set_input = input('Full data set or singular? (F/S)')
     if data_set_input in valid_full:
-        enc = 0
+        encount = 0
         h = 0
     elif data_set_input in valid_single:
         h = 0
@@ -30,7 +30,7 @@ while h >0:
             enc_input = input('Please enter an encounter:')
             if usr_int.check_user_input(enc_input):
                 if int(enc_input) in valid_enc:
-                    enc = enc_input
+                    encount = enc_input
                     g = 0
                 elif enc_input == '':
                     print('Error: No input provided.')
@@ -42,7 +42,7 @@ while h >0:
     else:
         print('Error: Please make a valid selection.')
 
-dum_val_ = file_dir_gen(enc, valid_enc)
+enc(encount, valid_enc)
 
 
 
