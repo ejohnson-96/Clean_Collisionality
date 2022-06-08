@@ -1,6 +1,6 @@
 import os
 import pathlib
-from ..variables import string_man as sm
+from modules.core.variables import string_man as sm
 
 
 def dir_path(

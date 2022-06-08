@@ -83,7 +83,7 @@ def nor_(
         return True
     elif (a == 0) and (b == 1):
         return False
-    elif (a == 1) and (b == 1):
+    elif (a == 1) and (b == 0):
         return False
     elif (a == 1) and (b == 1):
         return True
