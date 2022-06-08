@@ -31,7 +31,7 @@ while h >0:
             enc_input = input('Please enter an encounter:')
             if inpt.validate_input_number(enc_input):
                 if int(enc_input) in valid_enc:
-                    encount = enc_input
+                    encount = int(enc_input)
                     g = 0
                 elif enc_input == '':
                     print('Error: No input provided.')
@@ -46,7 +46,7 @@ while h >0:
 # Generate directory strings for encounters
 enc(encount, valid_enc)
 
-mm_data = rw.encounter_import()
+mm_data = rw.encounter_import(encount, valid_enc)
 error_data = rw.error_import()
 sc_data = rw.sc_import()
 
