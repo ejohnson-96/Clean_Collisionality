@@ -12,7 +12,7 @@ p = 'proton'
 a = 'alpha'
 
 particle_list = [p,a]
-valid_enc = [6,7]
+valid_enc = [4,6,7]
 print('Currently loaded encounters:', valid_enc, '\n')
 
 valid_full = ['f','F','full','Full','ful','Ful', 'ff', 'FF', 'fF', 'Ff']
@@ -45,10 +45,12 @@ while h >0:
 
 # Generate directory strings for encounters
 enc(encount, valid_enc)
-
-mm_data = rw.encounter_import(encount, valid_enc)
-error_data = rw.error_import()
+print('\n')
+mm_data = rw.encounter_import(encount, valid_enc, enc.error_files_loaded)
+if enc.error_files_loaded:
+    error_data = rw.error_import()
 sc_data = rw.sc_import()
+print('Data import sucessful.')
 
 
 
