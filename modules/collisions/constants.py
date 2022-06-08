@@ -54,7 +54,7 @@ def enc(
     enc.sc_names.append('Wind_Outside_Range_Min.csv')
     enc.sc_names.append('Wind_Temps.csv')
 
-    num_of_sc = len(enc.sc_names)
+    enc.num_of_sc = len(enc.sc_names)
 
     return
 

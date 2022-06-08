@@ -2,8 +2,7 @@ from modules.collisions.constants import *
 from modules.core.rw import file_import as fi, file_dir as fd
 from modules.core.system import config as sys_con
 
-slash = fd.
-
+slash = fd.slash()
 
 def create_encs(
         encount,
