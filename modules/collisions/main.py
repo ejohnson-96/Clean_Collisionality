@@ -1,11 +1,12 @@
-from modules.core.time import tictoc as stopwatch
+from modules.core.time import tictoc as stopwatch, convert as converter
 from modules.core.constants import initialise_constants
 
 from constants import *
 from modules.core.system import input as inpt
 from modules.collisions.loadsave import loadsave as rw
-from modules.collisions.features import scrub as scrub, lat_lon as lat_lon
+from modules.collisions.features import scrub as scrub, lat_lon as lat_lon, scalar_generate as sc_gen
 from modules.core.variables import num_man as nm
+from modules.core.features import graph as graph
 
 stopwatch.start_time()
 initialise_constants()
@@ -47,7 +48,7 @@ while h >0:
         print('Error: Please make a valid selection.')
 
 # Generate directory strings for encounters
-enc(encount, valid_enc)
+enc(encount, valid_enc, True)
 print('\n')
 error_files = enc.error_files_loaded
 mm_data = rw.encounter_import(encount, valid_enc, error_files)
@@ -70,7 +71,7 @@ for x in enc.encounter:
             arg_mm_file = y
 
     if error_files:
-        for y in error_data.keys():
+        for y in error_data[x].keys():
             if len(error_data[x][y][t]) > error_len_max:
                 error_len_max = len(error_data[x][y][t])
                 arg_encount_ = x
@@ -104,7 +105,7 @@ for x in enc.encounter:
     if error_files:
         for y in error_data[x].keys():
             xp = error_data[x][y][t]
-            for z in error_data[x][y][z]:
+            for z in error_data[x][y].keys():
                 fp = error_data[x][y][z]
                 error_data[x][y][z] = np.interp(t_, xp, fp)
 
@@ -133,14 +134,20 @@ for x in range(1):
                 arg_x_ = 0
             elif nm.is_odd(indx):
                 arg_x_ = 1
-            for z in mm_data[encount][enc.encounter_names[0 + arg_x_]].keys():
+            for z in mm_data[encount][enc.encounter_names[2*x + arg_x_]].keys():
                 solar_data[particle][z] = []
 
-if error_files:
-    for z in error_data[encount][enc.encounter_names[0]].keys():
-        errors[p][z] = []
-    for z in error_data[encount][enc.encounter_names[1]].keys():
-        errors[a][z] = []
+    if error_files:
+        for y in range(1):
+            for particle in particle_list:
+                indx = particle_list.index(particle)
+                if nm.is_even((indx)):
+                    arg_x_ = 0
+                else:
+                    arg_x_ = 1
+                for z in error_data[encount][enc.encounter_errors[2*x + arg_x_]].keys():
+                    errors[particle][z] = []
+
 
 for y in range(len(enc.sc_names)):
     spc_data[enc.sc_names[y]] = {}
@@ -160,7 +167,7 @@ for x in range(enc.num_of_encs):
                 solar_data[particle][z].append(mm_data[encount][enc.encounter_names[2*x + arg_x_]][z][w])
 
 print('Scrubbing data...')
-solar_data, errors, spc_data = scrub.scrub_data(solar_data, errors, spc_data)
+#solar_data, errors, spc_data = scrub.scrub_data(solar_data, errors, spc_data)
 
 spc_data[enc.sc_names[0]] = lat_lon.latlong_psp(spc_data[enc.sc_names[0]])
 spc_data[enc.sc_names[1]] = lat_lon.latlong_wind(spc_data[enc.sc_names[1]])
@@ -168,18 +175,18 @@ spc_data[enc.sc_names[1]] = lat_lon.latlong_wind(spc_data[enc.sc_names[1]])
 # Generate temperatures and velocity magnitudes
 print('Generating velocity magnitudes and temperature file... \n')
 scalar_velocity = sc_gen.scalar_velocity(solar_data)
-psp_scalar_temps, wind_scalar_temps = sc_gen.scalar_temps(solar_data, spc_data)
+#psp_scalar_temps, wind_scalar_temps = sc_gen.scalar_temps(solar_data, spc_data)
 
 # Generate single time set for the whole data set in appropriate unit
 solar_data[t] = []
-for i in range(len(solar_data[p]['time'])):
-    solar_data[t].append(df.epoch_time(solar_data[p]['time'][i]))
+for i in range(10): #range(len(solar_data[p][t])):
+    print(solar_data[p][t][i])
+    #solar_data[t].append(converter.epoch_time(solar_data[p][t][i]))
+
 print('Note: Files have been generated and loaded in.', '\n')
 
 
-print(solar_data[p].keys())
-
-
+graph.graph(solar_data[p][t], solar_data[p]['B_inst_x'])
 
 stopwatch.end_time()
 

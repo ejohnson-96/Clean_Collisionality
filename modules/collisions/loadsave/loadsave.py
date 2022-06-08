@@ -57,7 +57,7 @@ def sc_import(
     files = {}
 
     for i in range(enc.num_of_encs):
-        print('Spacecraft for ' + enc.encounter[i])
+        print('Spacecraft File: ' + enc.encounter[i])
         files[enc.encounter[i]] = {}
         for key in enc.sc_names:
             val = str(enc.encounter[i] + slash + 'Position' + slash + key)
