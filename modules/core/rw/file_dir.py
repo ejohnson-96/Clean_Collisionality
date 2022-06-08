@@ -1,6 +1,7 @@
 import os
 import pathlib
 from modules.core.variables import string_man as sm
+from modules.core.system import config as sys_con
 
 
 def dir_path(
@@ -85,4 +86,14 @@ def dir_num(
 
     return res
 
+
+def slash(
+
+):
+    windows_check = sys_con.windows_os()
+
+    if windows_check:
+        return '\\'
+    else:
+        return '/'
 

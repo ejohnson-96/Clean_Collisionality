@@ -332,3 +332,4 @@ def is_lower(
     res = char.islower()
 
     return res
+
