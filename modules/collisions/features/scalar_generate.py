@@ -48,17 +48,10 @@ def scalar_temps(
         solar_data,
         spc_data,
 ):
-    key_names = {}
-    file_names = []
-    factor = 11604
-    length = []
-    for file in solar_data:
-        file_names.append(file)
-        key_names[file] = []
-        for key in file:
-            key_names[file] = solar_data[file].keys()
 
-    L = len(spc_data)
+    factor = 11604
+
+    L = len(solar_data[t])
     psp_result = {}
     psp_result_keys = ['proton_scalar_temp_1', 'proton_scalar_temp_2',
                        'alpha_scalar_temp', 'theta_ap', 'dens_ap',

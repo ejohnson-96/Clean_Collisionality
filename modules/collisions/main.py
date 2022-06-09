@@ -183,24 +183,23 @@ print('Scrubbing data...')
 spc_data[enc.sc_names[0]] = lat_lon.latlong_psp(spc_data[enc.sc_names[0]])
 spc_data[enc.sc_names[1]] = lat_lon.latlong_wind(spc_data[enc.sc_names[1]])
 
-# Generate temperatures and velocity magnitudes
-print('Generating velocity magnitudes and temperature file... \n')
-scalar_velocity = sc_gen.scalar_velocity(solar_data)
-psp_scalar_temps, wind_scalar_temps = sc_gen.scalar_temps(solar_data, spc_data)
-
 # Generate single time set for the whole data set in appropriate unit
 solar_data[t] = []
 for i in range(len(solar_data[p][t])):
     solar_data[t].append(converter.epoch_time(solar_data[p][t][i]))
 
+# Generate temperatures and velocity magnitudes
+print('Generating velocity magnitudes and temperature file... \n')
+scalar_velocity = sc_gen.scalar_velocity(solar_data)
+psp_scalar_temps, wind_scalar_temps = sc_gen.scalar_temps(solar_data, spc_data)
 theta_ap_0 = psp_scalar_temps['theta_ap']
 print('Note: Files have been generated and loaded in.', '\n')
 
 theta_ap_final = theta_ap.make_theta_vals(solar_data, spc_data, psp_scalar_temps, 1.0)
 
 X = np.linspace(0, 15, 1000)
-Y = {theta_ap_0, theta_ap_final}
+Y = [theta_ap_0, theta_ap_final]
 
-graph.graph(X, Y)
+graph.histogram(X, Y)
 
 stopwatch.end_time()

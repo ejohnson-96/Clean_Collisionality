@@ -9,6 +9,7 @@ p = 'proton'
 a = 'alpha'
 psp = 'PSP.csv'
 
+
 def theta_ap_0(r_0, r_1, n_p_1, eta_ap, v_p_1, t_p_1, theta_ap_1,
                n_step=1000):
     # Initialize the alpha-proton charge and mass ratios.
@@ -75,9 +76,7 @@ def theta_ap_0(r_0, r_1, n_p_1, eta_ap, v_p_1, t_p_1, theta_ap_1,
         else:
             theta_ap = min([theta_ap, theta_ap_max])
 
-
     return theta_ap
-
 
 
 def theta_loop(
@@ -90,12 +89,14 @@ def theta_loop(
         temp,
         theta,
 ):
-    final_theta = np.zeros(len(time))
-    for i in range(int(len(time))):
+    L = len(time)
+    print(L)
+    final_theta = np.zeros(L)
+    for i in range(int(0.005*L)):
         final_theta[i] = theta_ap_0(wind_radius[i], psp_radius[i], density_p[i],
-                                            density_ap[i], speed[i],
-                                            temp[i], theta[i])
-        print(f"{(i / len(time)) * 100:.2f} %", end="\r")
+                                    density_ap[i], speed[i], temp[i], theta[i])
+        print(f"{(i / L) * 100:.2f} %", end="\r")
+
 
     return final_theta
 
@@ -105,7 +106,6 @@ def radius_split(
         spc_data,
         scalar_temps,
 ):
-
     dp_number = const.dp_number
 
     solar_sorted_data = {}
@@ -156,25 +156,22 @@ def radius_split(
 def make_theta_vals(
         solar_data,
         spc_data,
-        scalar_temps,
+        psp_scalar_temps,
         wind_radius_,
-        theta_=False,
 
 ):
-
     time = solar_data[p]['time']
     density_p = solar_data[p]['np1']
-    density_ap = scalar_temps['dens_ap']
-    temp = scalar_temps['proton_1_k']
+    density_ap = psp_scalar_temps['dens_ap']
+    temp = psp_scalar_temps['proton_1_k']
     speed = solar_data[p]['v_mag']
-    if isinstance(theta_, bool):
-        theta = scalar_temps['theta_ap']
-    else:
-        theta = theta_
+    theta = psp_scalar_temps['theta_ap']
+
     wind_radius = np.full(shape=len(spc_data['Wind_Orbit.csv'][t]),
                           fill_value=wind_radius_,
                           dtype=float)
-    psp_radius = spc_data[const.sc_names[0]]['RADIAL_DISTANCE_AU']
+
+    psp_radius = spc_data[psp]['radius']
 
     final_theta = theta_loop(time, wind_radius, psp_radius, density_p, density_ap, speed,
                              temp, theta)
