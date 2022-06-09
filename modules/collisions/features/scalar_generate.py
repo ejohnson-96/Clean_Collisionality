@@ -90,15 +90,16 @@ def scalar_temps(
 
     psp_result['theta_ap'] = validate_theta(psp_result['theta_ap'])
 
-
+    wind = spc_data['Wind_Temps.csv']
     wind_result_keys = ['wind_alpha_scalar_temp', 'wind_proton_scalar_temp', 'wind_theta']
     wind_result = {}
 
     for i in range(len(wind_result_keys)):
-        wind_result[wind_result_keys[i]] = np.zeros(len(spc_data['Wind_Temps.csv']['time']))
+        wind_result[wind_result_keys[i]] = np.zeros(L)
 
-    for i in range(len(spc_data['Wind_Temps.csv']['time'])):
-        arg_ = spc_data['Wind_Temps.csv']['TEMP_ALPHA_S/C_eV'][i]
+    print(wind.keys())
+    for i in range(L):
+        arg_ = 1
 
         if arg_ == 0:
             wind_result[wind_result_keys[0]][i] = 10**6
