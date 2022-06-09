@@ -4,9 +4,11 @@ from modules.core.constants import initialise_constants
 from constants import *
 from modules.core.system import input as inpt
 from modules.collisions.loadsave import loadsave as rw
-from modules.collisions.features import scrub as scrub, lat_lon as lat_lon, scalar_generate as sc_gen
+from modules.collisions.features import scrub as scrub, lat_lon as lat_lon, \
+    scalar_generate as sc_gen
 from modules.core.variables import num_man as nm
 from modules.core.features import graph as graph
+from modules.collisions.model import theta_ap as theta_ap
 
 stopwatch.start_time()
 initialise_constants()
@@ -15,15 +17,15 @@ t = 'time'
 p = 'proton'
 a = 'alpha'
 
-particle_list = [p,a]
-valid_enc = [4,6,7]
+particle_list = [p, a]
+valid_enc = [4, 6, 7]
 print('Currently loaded encounters:', valid_enc, '\n')
 
-valid_full = ['f','F','full','Full','ful','Ful', 'ff', 'FF', 'fF', 'Ff']
+valid_full = ['f', 'F', 'full', 'Full', 'ful', 'Ful', 'ff', 'FF', 'fF', 'Ff']
 valid_single = ['s', 'S', 'single', 'Single', 'ss', 'SS', 'sS', 'Ss']
 
 h = 1
-while h >0:
+while h > 0:
     data_set_input = input('Full data set or singular? (F/S)')
     if data_set_input in valid_full:
         encount = 0
@@ -81,7 +83,7 @@ for x in enc.encounter:
 
     for y in sc_data[x].keys():
         if len(sc_data[x][y][t]) > sc_len_max:
-            sc_len_max = len(sc_data[x][y][t]) #here
+            sc_len_max = len(sc_data[x][y][t])  # here
             arg_encount_ = x
             arg_sc_file = y
 
@@ -94,7 +96,6 @@ elif max_len == lengths[1]:
     t_ = error_data[arg_encount_][arg_error_file][t]
 elif max_len == lengths[2]:
     t_ = sc_data[arg_encount_][arg_sc_file][t]
-
 
 for x in enc.encounter:
     for y in mm_data[x].keys():
@@ -135,7 +136,7 @@ for x in range(1):
                 arg_x_ = 0
             elif nm.is_odd(indx):
                 arg_x_ = 1
-            for z in mm_data[encount][enc.encounter_names[2*x + arg_x_]].keys():
+            for z in mm_data[encount][enc.encounter_names[2 * x + arg_x_]].keys():
                 solar_data[particle][z] = []
 
     if error_files:
@@ -146,9 +147,8 @@ for x in range(1):
                     arg_x_ = 0
                 else:
                     arg_x_ = 1
-                for z in error_data[encount][enc.encounter_errors[2*x + arg_x_]].keys():
+                for z in error_data[encount][enc.encounter_errors[2 * x + arg_x_]].keys():
                     errors[particle][z] = []
-
 
     for y in range(len(enc.sc_names)):
         spc_data[enc.sc_names[y]] = {}
@@ -164,11 +164,21 @@ for x in range(enc.num_of_encs):
         elif nm.is_odd(indx):
             arg_x_ = 1
         for z in solar_data[particle].keys():
-            for w in range(len(mm_data[encount][enc.encounter_names[2*x + arg_x_]][z])):
-                solar_data[particle][z].append(mm_data[encount][enc.encounter_names[2*x + arg_x_]][z][w])
+            for w in range(len(mm_data[encount][enc.encounter_names[2 * x + arg_x_]][z])):
+                solar_data[particle][z].append(
+                    mm_data[encount][enc.encounter_names[2 * x + arg_x_]][z][w])
+        if error_files:
+            for z in errors[particle].keys():
+                for w in range(len(error_data[encount][enc.encounter_names[2*x + arg_x_]][z])):
+                    errors[particle][z].append(error_data[encount][enc.encounter_names[2 * x + arg_x_]][z][w])
+
+    for y in enc.sc_names:
+        for z in spc_data[y].keys():
+            for w in range(len(sc_data[encount][y][z])):
+                spc_data[y][z].append(sc_data[encount][y][z][w])
 
 print('Scrubbing data...')
-#solar_data, errors, spc_data = scrub.scrub_data(solar_data, errors, spc_data)
+# solar_data, errors, spc_data = scrub.scrub_data(solar_data, errors, spc_data)
 
 spc_data[enc.sc_names[0]] = lat_lon.latlong_psp(spc_data[enc.sc_names[0]])
 spc_data[enc.sc_names[1]] = lat_lon.latlong_wind(spc_data[enc.sc_names[1]])
@@ -185,12 +195,12 @@ for i in range(len(solar_data[p][t])):
 
 theta_ap_0 = psp_scalar_temps['theta_ap']
 print('Note: Files have been generated and loaded in.', '\n')
-print(psp_scalar_temps, wind_scalar_temps)
 
+theta_ap_final = theta_ap.make_theta_vals(solar_data, spc_data, psp_scalar_temps, 1.0)
 
-graph.graph(solar_data[t], solar_data[p]['B_inst_x'])
+X = np.linspace(0, 15, 1000)
+Y = {theta_ap_0, theta_ap_final}
+
+graph.graph(X, Y)
 
 stopwatch.end_time()
-
-
-
