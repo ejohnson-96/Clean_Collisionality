@@ -12,6 +12,7 @@ def const(
 
     const.pdf_smooth = 2
     const.arg_smooth = 2
+    const.bin_width = 0.2
 
     return
 

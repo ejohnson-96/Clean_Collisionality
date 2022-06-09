@@ -6,7 +6,7 @@ import random
 import numpy as np
 import warnings
 from modules.core.variables import char_man as cm
-from modules.core.features import smooth as smooth
+from modules.core.features import smooth as smoothing
 from modules.core.constants import const
 
 const()
@@ -121,23 +121,22 @@ def histogram(
         x_log=False,
 
 ):
-    if not isinstance(y_data. list):
+    if not isinstance(y_data, dict):
         raise TypeError(
             "Error: Argument must be a list, instead "
             f"got type {type(y_data)}."
         )
     y_arg_ = {}
     y_ = {}
-    bins = []
-    for key in y_data:
-        y_arg_[key] = smooth(y_data[key])
-        arg_ = int(max(y_arg_[key]) - min(y_arg_[key]) / const.bin_width)
-        bins.append(arg_)
 
-        hist = np.histogram(y_arg_[key])
+    for key in y_data.keys():
+        y_arg_[key] = smoothing.smooth(y_data[key], const.arg_smooth)
+        bins_ = int(max(y_arg_[key]) - min(y_arg_[key]) / const.bin_width)
+
+        hist = np.histogram(y_arg_[key], bins=bins_)
         hist_dist = scipy.stats.rv_histogram(hist)
 
-        y_[key] = smooth(hist_dist, const.pdf_smooth)
+        y_[key] = smoothing.smooth(hist_dist.pdf(x_data), const.pdf_smooth)
 
     graph(x_data, y_, x_lim, y_lim, limits, degree, title, label, x_axis, y_axis, grid,
           y_log, x_log, )
