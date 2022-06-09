@@ -121,10 +121,15 @@ def histogram(
         x_log=False,
 
 ):
+    if not isinstance(y_data. list):
+        raise TypeError(
+            "Error: Argument must be a list, instead "
+            f"got type {type(y_data)}."
+        )
     y_arg_ = {}
     y_ = {}
     bins = []
-    for key in y_data.key():
+    for key in y_data:
         y_arg_[key] = smooth(y_data[key])
         arg_ = int(max(y_arg_[key]) - min(y_arg_[key]) / const.bin_width)
         bins.append(arg_)
