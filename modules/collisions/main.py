@@ -48,7 +48,7 @@ while h >0:
         print('Error: Please make a valid selection.')
 
 # Generate directory strings for encounters
-enc(encount, valid_enc, True)
+enc(encount, valid_enc, False)
 print('\n')
 error_files = enc.error_files_loaded
 mm_data = rw.encounter_import(encount, valid_enc, error_files)
@@ -94,6 +94,7 @@ elif max_len == lengths[1]:
     t_ = error_data[arg_encount_][arg_error_file][t]
 elif max_len == lengths[2]:
     t_ = sc_data[arg_encount_][arg_sc_file][t]
+
 
 for x in enc.encounter:
     for y in mm_data[x].keys():
@@ -149,13 +150,13 @@ for x in range(1):
                     errors[particle][z] = []
 
 
-for y in range(len(enc.sc_names)):
-    spc_data[enc.sc_names[y]] = {}
-    for z in sc_data[encount][enc.sc_names[y]].keys():
-        spc_data[enc.sc_names[y]][z] = []
+    for y in range(len(enc.sc_names)):
+        spc_data[enc.sc_names[y]] = {}
+        for z in sc_data[encount][enc.sc_names[y]].keys():
+            spc_data[enc.sc_names[y]][z] = []
 
 for x in range(enc.num_of_encs):
-    encount = enc.encounter[0]
+    encount = enc.encounter[x]
     for particle in particle_list:
         indx = particle_list.index(particle)
         if nm.is_even(indx):
@@ -175,18 +176,19 @@ spc_data[enc.sc_names[1]] = lat_lon.latlong_wind(spc_data[enc.sc_names[1]])
 # Generate temperatures and velocity magnitudes
 print('Generating velocity magnitudes and temperature file... \n')
 scalar_velocity = sc_gen.scalar_velocity(solar_data)
-#psp_scalar_temps, wind_scalar_temps = sc_gen.scalar_temps(solar_data, spc_data)
+psp_scalar_temps, wind_scalar_temps = sc_gen.scalar_temps(solar_data, spc_data)
 
 # Generate single time set for the whole data set in appropriate unit
 solar_data[t] = []
-for i in range(10): #range(len(solar_data[p][t])):
-    print(solar_data[p][t][i])
-    #solar_data[t].append(converter.epoch_time(solar_data[p][t][i]))
+for i in range(len(solar_data[p][t])):
+    solar_data[t].append(converter.epoch_time(solar_data[p][t][i]))
 
+theta_ap_0 = psp_scalar_temps['theta_ap']
 print('Note: Files have been generated and loaded in.', '\n')
+print(psp_scalar_temps, wind_scalar_temps)
 
 
-graph.graph(solar_data[p][t], solar_data[p]['B_inst_x'])
+graph.graph(solar_data[t], solar_data[p]['B_inst_x'])
 
 stopwatch.end_time()
 

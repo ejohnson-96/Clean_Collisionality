@@ -22,8 +22,8 @@ def enc(
         L = len(valid_enc)
         enc.encounter = []
         for i in range(L):
-            enc.encounter[i] = valid_enc[i]
-            enc.encounter.append('E' + str(int(enc.encounter[i])))
+            arg_ = valid_enc[i]
+            enc.encounter.append('E' + str(int(arg_)))
     else:
         L = 1
         enc.encounter = []
