@@ -11,33 +11,21 @@ from modules.core.constants import const
 
 const()
 
-x_lim = 0,
-y_lim = 0,
-limits = False,
-degree = 0,
-title = 'Graph',
-label = 'Label',
-x_axis = 'x Data',
-y_axis = 'y Data',
-grid = True,
-y_log = False,
-x_log = False,
-
 
 def graph(
         x_data,
         y_data,
-        x_lim,
-        y_lim,
-        limits,
-        degree,
-        title,
-        label,
-        x_axis,
-        y_axis,
-        grid,
-        y_log,
-        x_log,
+        x_lim=0,
+        y_lim=0,
+        limits=False,
+        degree=0,
+        title='Graph',
+        label='Label',
+        x_axis='x Data',
+        y_axis='y Data',
+        grid=True,
+        y_log=False,
+        x_log=False,
 
 ):
     plt.figure(figsize=(const.x_dim, const.y_dim))
@@ -120,17 +108,17 @@ def graph(
 def histogram(
         x_data,
         y_data,
-        x_lim,
-        y_lim,
-        limits,
-        degree,
-        title,
-        label,
-        x_axis,
-        y_axis,
-        grid,
-        y_log,
-        x_log,
+        x_lim=0,
+        y_lim=0,
+        limits=False,
+        degree=0,
+        title='Graph',
+        label='Label',
+        x_axis='x Data',
+        y_axis='y Data',
+        grid=True,
+        y_log=False,
+        x_log=False,
 
 ):
     y_arg_ = {}
