@@ -1,25 +1,43 @@
+import scipy.stats
+
 from modules.core.constants import const
 import matplotlib.pyplot as plt
 import random
 import numpy as np
 import warnings
 from modules.core.variables import char_man as cm
+from modules.core.features import smooth as smooth
+from modules.core.constants import const
+
+const()
+
+x_lim = 0,
+y_lim = 0,
+limits = False,
+degree = 0,
+title = 'Graph',
+label = 'Label',
+x_axis = 'x Data',
+y_axis = 'y Data',
+grid = True,
+y_log = False,
+x_log = False,
 
 
 def graph(
         x_data,
         y_data,
-        x_lim=0,
-        y_lim=0,
-        limits=False,
-        degree=0,
-        title='Graph',
-        label='Label',
-        x_axis='x Data',
-        y_axis='y Data',
-        grid=True,
-        y_log=False,
-        x_log=False,
+        x_lim,
+        y_lim,
+        limits,
+        degree,
+        title,
+        label,
+        x_axis,
+        y_axis,
+        grid,
+        y_log,
+        x_log,
 
 ):
     plt.figure(figsize=(const.x_dim, const.y_dim))
@@ -31,7 +49,8 @@ def graph(
     x_0 = x_data[0]
     y_0 = 0
     if isinstance(y_data, (list, np.ndarray)):
-        plt.plot(x_data, y_data, label=cm.capital_first_letter(label), color='black', linewidth=const.line_width)
+        plt.plot(x_data, y_data, label=cm.capital_first_letter(label), color='black',
+                 linewidth=const.line_width)
     elif isinstance(y_data, dict):
         y_labels = []
         for key in y_data.keys():
@@ -40,7 +59,8 @@ def graph(
             r = random.random()
             g = random.random()
             b = random.random()
-            plt.plot(x_data, y_data[y_labels[i]], label=cm.capital_first_letter(y_labels[i]), color=(r, g, b),
+            plt.plot(x_data, y_data[y_labels[i]],
+                     label=cm.capital_first_letter(y_labels[i]), color=(r, g, b),
                      linewidth=const.line_width)
     else:
         raise ValueError(
@@ -58,8 +78,8 @@ def graph(
     plt.xticks(fontsize=const.tick_size)
     plt.yticks(fontsize=const.tick_size)
 
-    arg_ = int(((const.x_dim + const.y_dim)/2))
-    plt.tight_layout(pad=arg_*0.5)
+    arg_ = int(((const.x_dim + const.y_dim) / 2))
+    plt.tight_layout(pad=arg_ * 0.5)
 
     if not limits:
         pass
@@ -93,5 +113,40 @@ def graph(
 
     plt.xticks(rotation=degree)
     plt.show()
+
+    return
+
+
+def histogram(
+        x_data,
+        y_data,
+        x_lim,
+        y_lim,
+        limits,
+        degree,
+        title,
+        label,
+        x_axis,
+        y_axis,
+        grid,
+        y_log,
+        x_log,
+
+):
+    y_arg_ = {}
+    y_ = {}
+    bins = []
+    for key in y_data.key():
+        y_arg_[key] = smooth(y_data[key])
+        arg_ = int(max(y_arg_[key]) - min(y_arg_[key]) / const.bin_width)
+        bins.append(arg_)
+
+        hist = np.histogram(y_arg_[key])
+        hist_dist = scipy.stats.rv_histogram(hist)
+
+        y_[key] = smooth(hist_dist, const.pdf_smooth)
+
+    graph(x_data, y_, x_lim, y_lim, limits, degree, title, label, x_axis, y_axis, grid,
+          y_log, x_log, )
 
     return
