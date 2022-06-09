@@ -91,11 +91,11 @@ def theta_loop(
 ):
     L = len(time)
     final_theta = np.zeros(L)
-    for i in range(int(0.001*L)):
+    val = 1
+    for i in range(int(val * L)):
         final_theta[i] = theta_ap_0(wind_radius[i], psp_radius[i], density_p[i],
                                     density_ap[i], speed[i], temp[i], theta[i])
-        print(f"{(i / L) * 100:.2f} %", end="\r")
-
+        print('\r', f"{(i / L) * 100:.2f} %", end="")
 
     return final_theta
 
