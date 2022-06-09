@@ -2,12 +2,11 @@ import os
 import pathlib
 import pandas as pd
 import numpy as np
-from file_types import types
+from modules.core.rw.file_types import types
 
 
 import csv
 
-res = types()
 valid_file_types = types.valid_file_types
 
 

@@ -271,3 +271,30 @@ def quad_root(
         x_1 = (-b - deter) / 2 * a
 
     return x_0, x_1
+
+
+def is_even(
+        number,
+):
+    if not isinstance(number, (int, float)):
+        raise TypeError(
+            "Error: Argument must be a number of type "
+            " integer or of type float, insteat got "
+            f"type {type(number)}."
+        )
+
+    if number % 2 == 0:
+        return True
+    else:
+        return False
+
+
+def is_odd(
+        number,
+):
+    if is_even(number) == False:
+        return True
+    else:
+        return False
+
+

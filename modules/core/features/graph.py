@@ -18,6 +18,8 @@ def graph(
         x_axis='x Data',
         y_axis='y Data',
         grid=True,
+        y_log=False,
+        x_log=False,
 
 ):
     plt.figure(figsize=(const.x_dim, const.y_dim))
@@ -80,6 +82,15 @@ def graph(
         pass
     else:
         plt.grid()
+    if not x_log:
+        pass
+    else:
+        plt.set_xscale('log')
+    if not y_log:
+        pass
+    else:
+        plt.set_yscale('log')
+
     plt.xticks(rotation=degree)
     plt.show()
 

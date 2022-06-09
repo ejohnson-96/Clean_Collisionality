@@ -1,3 +1,4 @@
+import validators
 
 def jws(
         a,
@@ -105,6 +106,39 @@ def slash_check(
 
     return res
 
+def web_check(
+        url,
+):
+    if not isinstance(url, str):
+        raise TypeError(
+            "Error: URL argument must be a string, instead "
+            f"got type {type(url)}"
+        )
+
+    http = 'https://'
+    www = 'www.'
+
+    if url[:7] == http:
+        pass
+    elif url[:3] == 'w':
+        url = http + url
+    else:
+        url = http + www + url
+
+    if url[-1] != '/':
+        url = url + '/'
+
+    valid_url = validators.url(url)
+
+    if valid_url:
+        return url
+    else:
+        raise ValueError(
+            "Error: An invalid URL was provided."
+        )
+
+
+
 def split(
         string,
         character,
@@ -112,3 +146,4 @@ def split(
 ):
 
     return
+
