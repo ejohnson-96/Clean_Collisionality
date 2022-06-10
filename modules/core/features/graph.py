@@ -224,7 +224,7 @@ def histogram(
         y_log=False,
         x_log=False,
         colours=None,
-
+        style='-',
 ):
     if isinstance(y_data, dict):
         y_arg_ = {}
@@ -250,6 +250,6 @@ def histogram(
         )
 
     graph(x_data, y_, x_lim, y_lim, limits, degree, title, label, x_axis, y_axis, grid,
-          y_log, x_log, colours, )
+          y_log, x_log, colours,style )
 
     return
