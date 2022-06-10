@@ -2,7 +2,7 @@ import os
 import pathlib
 import pandas as pd
 import numpy as np
-from modules.core.rw.file_types import types
+from modules.core.loadsave.file_types import types
 
 
 import csv
