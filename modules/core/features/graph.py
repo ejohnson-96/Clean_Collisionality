@@ -108,6 +108,8 @@ def graph(
         )
     x_0 = x_data[0]
     y_0 = 0
+
+    style_line = validate_styles(style_line)
     if isinstance(y_data, (list, np.ndarray)):
         plt.plot(x_data, y_data, label=cm.capital_first_letter(label), color='black',
                  linewidth=const.line_width, linestyle=style_line)
@@ -142,17 +144,16 @@ def graph(
                     )
                 else:
                     colours = colours_validate(colours)
-                    for colour in colours:
-                        if isinstance(style_line, str):
-                            plt.plot(x_data, y_data[y_labels[i]],
-                                     label=cm.capital_first_letter(y_labels[i]),
-                                     color=colour,
-                                     linewidth=const.line_width, linestyle=style_line)
-                        else:
-                            plt.plot(x_data, y_data[y_labels[i]],
-                                     label=cm.capital_first_letter(y_labels[i]),
-                                     color=colour,
-                                     linewidth=const.line_width, linestyle=style_line[i])
+                    colour = colours[i]
+                    if isinstance(style_line, str):
+                        plt.plot(x_data, y_data[y_labels[i]],
+                                 label=cm.capital_first_letter(y_labels[i]), color=colour,
+                                 linewidth=const.line_width, linestyle=style_line)
+
+                    else:
+                        plt.plot(x_data, y_data[y_labels[i]],
+                                 label=cm.capital_first_letter(y_labels[i]), color=colour,
+                                 linewidth=const.line_width, linestyle=style_line[i])
 
     else:
         raise ValueError(
@@ -250,6 +251,6 @@ def histogram(
         )
 
     graph(x_data, y_, x_lim, y_lim, limits, degree, title, label, x_axis, y_axis, grid,
-          y_log, x_log, colours,style )
+          y_log, x_log, colours, style)
 
     return
