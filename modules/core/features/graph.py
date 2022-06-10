@@ -110,7 +110,7 @@ def graph(
     y_0 = 0
     if isinstance(y_data, (list, np.ndarray)):
         plt.plot(x_data, y_data, label=cm.capital_first_letter(label), color='black',
-                 linewidth=const.line_width, line_style=style_line)
+                 linewidth=const.line_width, linestyle=style_line)
     elif isinstance(y_data, dict):
         y_labels = []
         for key in y_data.keys():
@@ -123,11 +123,11 @@ def graph(
                 if isinstance(style_line, str):
                     plt.plot(x_data, y_data[y_labels[i]],
                              label=cm.capital_first_letter(y_labels[i]), color=(r, g, b),
-                             linewidth=const.line_width, line_style=style_line)
+                             linewidth=const.line_width, linestyle=style_line)
                 else:
                     plt.plot(x_data, y_data[y_labels[i]],
                              label=cm.capital_first_letter(y_labels[i]), color=(r, g, b),
-                             linewidth=const.line_width, line_style=style_line[i])
+                             linewidth=const.line_width, linestyle=style_line[i])
             else:
                 if not isinstance(colours, (list, np.ndarray)):
                     raise TypeError(
@@ -147,12 +147,12 @@ def graph(
                             plt.plot(x_data, y_data[y_labels[i]],
                                      label=cm.capital_first_letter(y_labels[i]),
                                      color=colour,
-                                     linewidth=const.line_width, line_style=style_line)
+                                     linewidth=const.line_width, linestyle=style_line)
                         else:
                             plt.plot(x_data, y_data[y_labels[i]],
                                      label=cm.capital_first_letter(y_labels[i]),
                                      color=colour,
-                                     linewidth=const.line_width, line_style=style_line[i])
+                                     linewidth=const.line_width, linestyle=style_line[i])
 
     else:
         raise ValueError(
