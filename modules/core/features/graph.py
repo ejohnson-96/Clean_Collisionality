@@ -127,6 +127,15 @@ def graph(
                              label=cm.capital_first_letter(y_labels[i]), color=(r, g, b),
                              linewidth=const.line_width, linestyle=style_line)
                 else:
+
+                    if len(style_line) != len(y_labels):
+                        raise ValueError(
+                            "Error: Argument 'style_line' should have a "
+                            "length equal to the number of 'y_labels',"
+                            f" instead got {len(style_line)} and "
+                            f"{len(y_labels)} respectively "
+                        )
+
                     plt.plot(x_data, y_data[y_labels[i]],
                              label=cm.capital_first_letter(y_labels[i]), color=(r, g, b),
                              linewidth=const.line_width, linestyle=style_line[i])
