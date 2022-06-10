@@ -58,12 +58,19 @@ def graph(
                         "Error: Colours needs to be list or an array,"
                         f"instead, got type {type(colours)}."
                     )
-                if not len(colours) != len(y_data):
+                elif len(colours) != len(y_data):
                     raise ValueError(
                         "Error: Colours must have the same length as the"
                         "number of y data entries, instead got lengths "
                         f"of {len(colours)} and {len(y_data)} respectively."
                     )
+                else:
+                    for colour in colours:
+                        plt.plot(x_data, y_data[y_labels[i]],
+                                 label=cm.capital_first_letter(y_labels[i]),
+                                 color=colour,
+                                 linewidth=const.line_width)
+
     else:
         raise ValueError(
             f"Error: y_data type not supported, {type(y_data)}"
@@ -136,7 +143,6 @@ def histogram(
         colours=None,
 
 ):
-
     if isinstance(y_data, dict):
         y_arg_ = {}
         y_ = {}
@@ -152,11 +158,10 @@ def histogram(
             y_[key] = smooth(hist_dist, const.pdf_smooth)
     elif isinstance(y_data, (list, np.ndarray)):
         y_arg_ = smooth(y_data)
-        bin_num = int((max(y_arg_) - min(y_arg_))/const.bin_width)
+        bin_num = int((max(y_arg_) - min(y_arg_)) / const.bin_width)
         hist = np.histogram(y_arg_, bins=bin_num)
         hist_dist = scipy.stats.rv_histogram(hist)
         y_ = smooth(hist_dist, const.pdf_smooth)
-
 
     else:
         raise TypeError(
