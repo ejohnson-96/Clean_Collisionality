@@ -42,7 +42,7 @@ while h > 0:
                 elif enc_input == '':
                     print('Error: No input provided.')
                 else:
-                    print('Error: No coresponding encounter available.')
+                    print('Error: No corresponding encounter available.')
             else:
                 print('Error: Argument provided is not valid,'
                       f' argument {enc_input}, is of type {type(enc_input)}.')
@@ -194,12 +194,15 @@ scalar_velocity = sc_gen.scalar_velocity(solar_data)
 psp_scalar_temps, wind_scalar_temps = sc_gen.scalar_temps(solar_data, spc_data)
 theta_ap_0 = psp_scalar_temps['theta_ap']
 print('Note: Files have been generated and loaded in.', '\n')
+theta_ap_final = theta_ap.make_theta_vals(solar_data, spc_data, psp_scalar_temps, 1.0)
 
-#theta_ap_final = theta_ap.make_theta_vals(solar_data, spc_data, psp_scalar_temps, 1.0)
+theta = {'i': theta_ap_0, 'f': theta_ap_final}
 
 X = np.linspace(0, 15, 1000)
-Y = {'theta':theta_ap_0} #, 'final_theta': theta_ap_final}
+Y = theta
+color = ['red', 'blue']
+line_style = ['solid', 'dashed']
 
-graph.histogram(X, Y)
+graph.histogram(X, Y,  style=line_style, colours=color)
 
 stopwatch.end_time()
