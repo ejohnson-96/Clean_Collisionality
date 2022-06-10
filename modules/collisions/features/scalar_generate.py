@@ -109,7 +109,10 @@ def scalar_temps(
 
         wind_result['wind_proton_scalar_temp'][i] = wind['TEMP_PROTN_S/C_eV'][i]
 
-        wind_result['wind_theta'][i] = wind['TEMP_ALPHA_S/C_eV'][i] / wind['TEMP_PROTN_S/C_eV'][i]
+        if wind['TEMP_PROTN_S/C_eV'][i] == 0:
+            wind['TEMP_PROTN_S/C_eV'][i] = 10*30
+
+        wind_result['wind_theta'][i] = wind['TEMP_ALPHA_S/C_eV'][i] /wind['TEMP_PROTN_S/C_eV'][i]
 
     wind_result['wind_theta'] = validate_theta(wind_result['wind_theta'])
 

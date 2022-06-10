@@ -198,11 +198,12 @@ theta_ap_final = theta_ap.make_theta_vals(solar_data, spc_data, psp_scalar_temps
 
 theta = {'i': theta_ap_0, 'f': theta_ap_final}
 
+print(len(theta_ap_0), len(theta_ap_final))
+
 X = np.linspace(0, 15, 1000)
 Y = theta
-color = ['red', 'blue']
 line_style = ['solid', 'dashed']
 
-graph.histogram(X, Y,  style=line_style, colours=color)
+graph.histogram(X, Y,  style=line_style,)
 
 stopwatch.end_time()
