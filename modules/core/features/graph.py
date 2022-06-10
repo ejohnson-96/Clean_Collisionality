@@ -2,7 +2,7 @@ import scipy.stats
 
 from modules.core.constants import const
 import matplotlib.pyplot as plt
-from matplotlib import colors as mcolors
+from matplotlib import colors as mcolors, markers as mark
 import random
 import numpy as np
 import warnings
@@ -51,6 +51,37 @@ def colours_validate(
     return res
 
 
+def validate_styles(
+        line_style,
+):
+    valid_styles = []
+    for style in mark.MarkerStyle.markers.keys():
+        valid_styles.append(style)
+
+    if isinstance(line_style, str):
+        if line_style in valid_styles:
+            return line_style
+        else:
+            raise ValueError(
+                f"Error: Line style time {line_style} is not supported."
+            )
+    elif isinstance(line_style, list):
+        for style in line_style:
+            if not isinstance(style, str):
+                raise TypeError(
+                    f"Error: Style '{style}' in line styles is not a "
+                    f"string, instead got type {type(style)}."
+
+                )
+            else:
+                return line_style
+    else:
+        raise TypeError(
+            f"Error: Line styles must be a string or a list of strings,"
+            f" instead got type of {type(line_style)}."
+        )
+
+
 def graph(
         x_data,
         y_data,
@@ -66,6 +97,7 @@ def graph(
         y_log=False,
         x_log=False,
         colours=None,
+        style_line='-',
 
 ):
     plt.figure(figsize=(const.x_dim, const.y_dim))
@@ -78,7 +110,7 @@ def graph(
     y_0 = 0
     if isinstance(y_data, (list, np.ndarray)):
         plt.plot(x_data, y_data, label=cm.capital_first_letter(label), color='black',
-                 linewidth=const.line_width)
+                 linewidth=const.line_width, line_style=style_line)
     elif isinstance(y_data, dict):
         y_labels = []
         for key in y_data.keys():
@@ -88,9 +120,14 @@ def graph(
                 r = random.random()
                 g = random.random()
                 b = random.random()
-                plt.plot(x_data, y_data[y_labels[i]],
-                         label=cm.capital_first_letter(y_labels[i]), color=(r, g, b),
-                         linewidth=const.line_width)
+                if isinstance(style_line, str):
+                    plt.plot(x_data, y_data[y_labels[i]],
+                             label=cm.capital_first_letter(y_labels[i]), color=(r, g, b),
+                             linewidth=const.line_width, line_style=style_line)
+                else:
+                    plt.plot(x_data, y_data[y_labels[i]],
+                             label=cm.capital_first_letter(y_labels[i]), color=(r, g, b),
+                             linewidth=const.line_width, line_style=style_line[i])
             else:
                 if not isinstance(colours, (list, np.ndarray)):
                     raise TypeError(
@@ -106,10 +143,16 @@ def graph(
                 else:
                     colours = colours_validate(colours)
                     for colour in colours:
-                        plt.plot(x_data, y_data[y_labels[i]],
-                                 label=cm.capital_first_letter(y_labels[i]),
-                                 color=colour,
-                                 linewidth=const.line_width)
+                        if isinstance(style_line, str):
+                            plt.plot(x_data, y_data[y_labels[i]],
+                                     label=cm.capital_first_letter(y_labels[i]),
+                                     color=colour,
+                                     linewidth=const.line_width, line_style=style_line)
+                        else:
+                            plt.plot(x_data, y_data[y_labels[i]],
+                                     label=cm.capital_first_letter(y_labels[i]),
+                                     color=colour,
+                                     linewidth=const.line_width, line_style=style_line[i])
 
     else:
         raise ValueError(
