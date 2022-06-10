@@ -136,23 +136,33 @@ def histogram(
         colours=None,
 
 ):
-    if not isinstance(y_data.list):
+
+    if isinstance(y_data, dict):
+        y_arg_ = {}
+        y_ = {}
+        bin_num = []
+        for key in y_data:
+            y_arg_[key] = smooth(y_data[key])
+            arg_ = int(max(y_arg_[key]) - min(y_arg_[key]) / const.bin_width)
+            bin_num.append(arg_)
+
+            hist = np.histogram(y_arg_[key], bins=bin_num)
+            hist_dist = scipy.stats.rv_histogram(hist)
+
+            y_[key] = smooth(hist_dist, const.pdf_smooth)
+    elif isinstance(y_data, (list, np.ndarray)):
+        y_arg_ = smooth(y_data)
+        bin_num = int((max(y_arg_) - min(y_arg_))/const.bin_width)
+        hist = np.histogram(y_arg_, bins=bin_num)
+        hist_dist = scipy.stats.rv_histogram(hist)
+        y_ = smooth(hist_dist, const.pdf_smooth)
+
+
+    else:
         raise TypeError(
-            "Error: Argument must be a list, instead "
+            "Error: Argument must be a dict, list or array instead "
             f"got type {type(y_data)}."
         )
-    y_arg_ = {}
-    y_ = {}
-    bins = []
-    for key in y_data:
-        y_arg_[key] = smooth(y_data[key])
-        arg_ = int(max(y_arg_[key]) - min(y_arg_[key]) / const.bin_width)
-        bins.append(arg_)
-
-        hist = np.histogram(y_arg_[key])
-        hist_dist = scipy.stats.rv_histogram(hist)
-
-        y_[key] = smooth(hist_dist, const.pdf_smooth)
 
     graph(x_data, y_, x_lim, y_lim, limits, degree, title, label, x_axis, y_axis, grid,
           y_log, x_log, colours, )
