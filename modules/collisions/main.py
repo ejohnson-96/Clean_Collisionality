@@ -195,10 +195,10 @@ psp_scalar_temps, wind_scalar_temps = sc_gen.scalar_temps(solar_data, spc_data)
 theta_ap_0 = psp_scalar_temps['theta_ap']
 print('Note: Files have been generated and loaded in.', '\n')
 
-theta_ap_final = theta_ap.make_theta_vals(solar_data, spc_data, psp_scalar_temps, 1.0)
+#theta_ap_final = theta_ap.make_theta_vals(solar_data, spc_data, psp_scalar_temps, 1.0)
 
 X = np.linspace(0, 15, 1000)
-Y = {'theta': theta_ap_0, 'final_theta': theta_ap_final}
+Y = {'theta':theta_ap_0} #, 'final_theta': theta_ap_final}
 
 graph.histogram(X, Y)
 
