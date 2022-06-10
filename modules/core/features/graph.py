@@ -2,6 +2,7 @@ import scipy.stats
 
 from modules.core.constants import const
 import matplotlib.pyplot as plt
+from matplotlib import colors as mcolors
 import random
 import numpy as np
 import warnings
@@ -10,6 +11,44 @@ from modules.core.features import smooth as smoothing
 from modules.core.constants import const
 
 const()
+
+
+def colours_validate(
+        colours,
+):
+    if colours is None:
+        raise ValueError(
+            "Error: No colours were provided."
+        )
+    else:
+
+        if not isinstance(colours, list):
+            raise TypeError(
+                "Error: Colours must be a list, instead "
+                f"got type {type(colours)}."
+            )
+
+        colors = dict(mcolors.BASE_COLORS, **mcolors.CSS4_COLORS)
+        by_hsv = sorted((tuple(mcolors.rgb_to_hsv(mcolors.to_rgba(color)[:3])), name)
+                        for name, color in colors.items())
+        valid_colors = [name for hsv, name in by_hsv]
+        res = []
+
+        for color in colours:
+            if not isinstance(color, str):
+                raise ValueError(
+                    f"Error: The entry {color} in colours, is not a "
+                    f"string, instead got type {type(color)}."
+                )
+            elif color not in valid_colors:
+                raise ValueError(
+                    f"Error: The entry {color} in colours is not "
+                    "supported, please try another colour."
+                )
+            else:
+                res.append(color)
+
+    return res
 
 
 def graph(
@@ -65,6 +104,7 @@ def graph(
                         f"of {len(colours)} and {len(y_data)} respectively."
                     )
                 else:
+                    colours = colours_validate(colours)
                     for colour in colours:
                         plt.plot(x_data, y_data[y_labels[i]],
                                  label=cm.capital_first_letter(y_labels[i]),
