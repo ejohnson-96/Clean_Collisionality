@@ -205,4 +205,6 @@ line_style = ['solid']
 
 graph.histogram(X, Y,  style=line_style,)
 
+graph.graph(solar_data[t], solar_data[p]['v_mag'])
+
 stopwatch.end_time()

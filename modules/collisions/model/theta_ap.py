@@ -35,13 +35,19 @@ def validate_theta(
                 f"instead got type {type(value)}"
             )
         else:
-            arg_min_ = value * (1 - rel_tol / 100)
-            arg_max_ = value * (1 + rel_tol / 100)
+            if not isinstance(rel_tol, (float, int)):
+                raise TypeError(
+                    "Error: Argument 'rel_tol' needs to be an integer"
+                    f" or float, instead got type {type(rel_tol)}."
+                )
+            else:
+                arg_min_ = value * (1 - rel_tol / 100)
+                arg_max_ = value * (1 + rel_tol / 100)
 
-            arg_ = theta[np.where((theta > arg_min_) & (theta < arg_max_))]
-            res = [x for x in theta if x not in arg_]
+                arg_ = theta[np.where((theta > arg_min_) & (theta < arg_max_))]
+                res = [x for x in theta if x not in arg_]
 
-            return smoothing.smooth(res, core_const.arg_smooth)
+                return smoothing.smooth(res, core_const.arg_smooth)
 
 
 def theta_ap_0(r_0, r_1, n_p_1, eta_ap, v_p_1, t_p_1, theta_ap_1,
