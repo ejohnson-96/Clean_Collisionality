@@ -209,7 +209,7 @@ def graph(
     if not x_log:
         pass
     else:
-        plt.yscale('log')
+        plt.xscale('log')
     if not y_log:
         pass
     else:
