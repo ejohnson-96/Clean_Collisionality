@@ -238,23 +238,24 @@ def histogram(
         colours=None,
         style='-',
         width=const.line_width,
+        bin_number=const.bin_width,
 ):
 
     if isinstance(y_data, dict):
         y_arg_ = {}
         y_ = {}
         for key in y_data.keys():
-            y_arg_[key] = smoothing.smooth(y_data[key], const.arg_smooth)
-            bin_num = int(int((max(y_arg_[key]) - min(y_arg_[key])))/ const.bin_width)
+            y_arg_[key] = smoothing.smooth(y_data[key], const.smooth)
+            bin_num = int(int((max(y_arg_[key]) - min(y_arg_[key])))/ bin_number)
             hist = np.histogram(y_arg_[key], bins=bin_num)
             hist_dist = scipy.stats.rv_histogram(hist)
-            y_[key] = smoothing.smooth(hist_dist.pdf(x_data), const.pdf_smooth)
+            y_[key] = smoothing.smooth(hist_dist.pdf(x_data), const.smooth)
     elif isinstance(y_data, (list, np.ndarray)):
-        y_arg_ = smoothing.smooth(y_data, const.arg_smooth)
-        bin_num = int((max(y_arg_) - min(y_arg_)) / const.bin_width)
+        y_arg_ = smoothing.smooth(y_data, const.smooth)
+        bin_num = int((max(y_arg_) - min(y_arg_)) / bin_number)
         hist = np.histogram(y_arg_, bins=bin_num)
         hist_dist = scipy.stats.rv_histogram(hist)
-        y_ = smoothing.smooth(hist_dist.pdf(x_data), const.pdf_smooth)
+        y_ = smoothing.smooth(hist_dist.pdf(x_data), const.smooth)
 
     else:
         raise TypeError(
