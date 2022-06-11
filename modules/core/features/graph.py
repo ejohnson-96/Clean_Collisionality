@@ -54,10 +54,8 @@ def colours_validate(
 def validate_styles(
         line_style,
 ):
-    valid_styles = []
-    for style in mark.MarkerStyle.markers.keys():
-        valid_styles.append(style)
-    print(valid_styles)
+    valid_styles = list(mark.MarkerStyle.markers.keys())
+
     if isinstance(line_style, str):
         if line_style in valid_styles:
             return line_style
@@ -113,7 +111,6 @@ def graph(
     if style_line is None:
         style_line = '-'
     else:
-        print(style_line)
         style_line = validate_styles(style_line)
     if isinstance(y_data, (list, np.ndarray)):
         plt.plot(x_data, y_data, label=cm.capital_first_letter(label), color='black',
