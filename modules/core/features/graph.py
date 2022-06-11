@@ -239,6 +239,7 @@ def histogram(
         x_log=False,
         colours=None,
         style='-',
+        width=const.line_width,
 ):
 
     if isinstance(y_data, dict):
@@ -264,6 +265,6 @@ def histogram(
         )
 
     graph(x_data, y_, x_lim, y_lim, limits, degree, title, label, x_axis, y_axis, grid,
-          y_log, x_log, colours, style)
+          y_log, x_log, colours, style, line_width=width)
 
     return
