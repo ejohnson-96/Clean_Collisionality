@@ -191,7 +191,7 @@ for i in range(len(solar_data[p][t])):
 # Generate temperatures and velocity magnitudes
 print('Generating velocity magnitudes and temperature file... \n')
 scalar_velocity = sc_gen.scalar_velocity(solar_data)
-psp_scalar_temps, wind_scalar_temps = sc_gen.scalar_temps(solar_data, spc_data)
+psp_scalar_temps, wind_scalar_temps = sc_gen.scalar_temps(solar_data, spc_data, 3.4, 5)
 theta_ap_0 = psp_scalar_temps['theta_ap']
 print('Note: Files have been generated and loaded in.', '\n')
 theta_ap_final = theta_ap.make_theta_vals(solar_data, spc_data, psp_scalar_temps, 1.0)
@@ -203,7 +203,7 @@ X = np.linspace(0, 15, 1000)
 Y = theta
 line_style = ['solid']
 
-graph.histogram(X, Y,  style=line_style,)
+graph.histogram(X, Y,  style=line_style, lin)
 
 graph.graph(solar_data[t], solar_data[p]['v_mag'])
 

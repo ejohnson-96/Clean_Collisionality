@@ -34,6 +34,8 @@ def scalar_velocity(
 def scalar_temps(
         solar_data,
         spc_data,
+        value=None,
+        rel_tol=None,
 ):
 
     factor = 11604
@@ -76,7 +78,11 @@ def scalar_temps(
         else:
             psp_result['dens_ap'][i] = solar_data[a]['na'][i] / solar_data[p]['np1'][i]
 
-    psp_result['theta_ap'] = theta_ap_.validate_theta(psp_result['theta_ap'], 3.5, 5)
+    if value and rel_tol is None:
+        psp_result['theta_ap'] = theta_ap_.validate_theta(psp_result['theta_ap'])
+    else:
+        #isinstance
+        psp_result['theta_ap'] = theta_ap_.validate_theta(psp_result['theta_ap'], value, rel_tol)
 
     wind = spc_data['Wind_Temps.csv']
 
