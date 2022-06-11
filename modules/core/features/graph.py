@@ -2,7 +2,7 @@ import scipy.stats
 
 from modules.core.constants import const
 import matplotlib.pyplot as plt
-from matplotlib import colors as mcolors, markers as mark
+from matplotlib import colors as mcolors, markers as mark, lines as line
 import random
 import numpy as np
 import warnings
@@ -54,7 +54,7 @@ def colours_validate(
 def validate_styles(
         line_style,
 ):
-    valid_styles = list(mark.MarkerStyle.markers.keys())
+    valid_styles = list(list(line.lineStyles.keys()) + list(mark.MarkerStyle.markers.keys()))
 
     if isinstance(line_style, str):
         if line_style in valid_styles:
