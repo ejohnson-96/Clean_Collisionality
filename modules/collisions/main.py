@@ -8,7 +8,7 @@ from modules.collisions.features import scrub as scrub, lat_lon as lat_lon, \
     scalar_generate as sc_gen
 from modules.core.variables import num_man as nm
 from modules.core.features import graph as graph
-from modules.collisions.model import theta_ap as theta_ap
+from modules.collisions.model import theta_ap as theta_ap, errors as error
 
 stopwatch.start_time()
 initialise_constants()
@@ -191,7 +191,8 @@ for i in range(len(solar_data[p][t])):
 # Generate temperatures and velocity magnitudes
 print('Generating velocity magnitudes and temperature file... \n')
 scalar_velocity = sc_gen.scalar_velocity(solar_data)
-psp_scalar_temps, wind_scalar_temps = sc_gen.scalar_temps(solar_data, spc_data, 3.4, 5)
+guess_values = [0,3.4,0]
+psp_scalar_temps, wind_scalar_temps = sc_gen.scalar_temps(solar_data, spc_data, value=11.5, rel_tol=4)
 theta_ap_0 = psp_scalar_temps['theta_ap']
 print('Note: Files have been generated and loaded in.', '\n')
 theta_ap_final = theta_ap.make_theta_vals(solar_data, spc_data, psp_scalar_temps, 1.0)
@@ -201,10 +202,13 @@ theta = {'i': theta_ap_0}
 
 X = np.linspace(0, 15, 1000)
 Y = theta
-line_style = ['solid']
 
-graph.histogram(X, Y,  style=line_style, width=3)
+line_colour = ['black', 'blue']
 
-graph.graph(solar_data[t], solar_data[p]['v_mag'])
+graph.histogram(X, Y, width=3)
+
+x, y = error.loop_uncer(solar_data, psp_scalar_temps)
+
+graph.graph(x, y, colours=line_colour)
 
 stopwatch.end_time()
