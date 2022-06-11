@@ -21,9 +21,10 @@ def loop_uncer(
     for particle in particle_list:
         vals_[particle] = []
 
-        for i in range(len(intervals_per_day)):
-            arg_ = gen_uncer(solar_data, psp_scalar_temps, intervals_per_day[i])
-            vals_[particle].append(arg_)
+    for i in range(len(intervals_per_day)):
+        arg_p_, arg_a_ = gen_uncer(solar_data, psp_scalar_temps, intervals_per_day[i])
+        vals_[p].append(arg_p_)
+        vals_[a].append(arg_a_)
 
     return interval_length, vals_
 
