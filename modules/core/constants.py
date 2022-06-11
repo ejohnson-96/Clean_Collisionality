@@ -4,10 +4,10 @@ def const(
     const.x_dim = 10
     const.y_dim = 10
     const.title_size = 30
-    const.label_size = 16
-    const.tick_size = 18
-    const.legend_size = 12
-    const.font_family = 'sans-serif'
+    const.label_size = 30
+    const.tick_size = 24
+    const.legend_size = 30
+    const.font_family = 'Courier New'
     const.line_width = 2
 
     const.pdf_smooth = 5
