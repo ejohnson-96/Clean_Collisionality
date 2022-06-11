@@ -209,11 +209,11 @@ def graph(
     if not x_log:
         pass
     else:
-        plt.set_xscale('log')
+        plt.yscale('log')
     if not y_log:
         pass
     else:
-        plt.set_yscale('log')
+        plt.yscale('log')
 
     plt.xticks(rotation=degree)
     plt.show()
