@@ -97,7 +97,8 @@ def graph(
         y_log=False,
         x_log=False,
         colours=None,
-        style_line='-',
+        style_line=None,
+        line_width=const.line_width,
 
 ):
     plt.figure(figsize=(const.x_dim, const.y_dim))
@@ -109,10 +110,13 @@ def graph(
     x_0 = x_data[0]
     y_0 = 0
 
-    style_line = validate_styles(style_line)
+    if style_line is None:
+        style_line = '-'
+    else:
+        style_line = validate_styles(style_line)
     if isinstance(y_data, (list, np.ndarray)):
         plt.plot(x_data, y_data, label=cm.capital_first_letter(label), color='black',
-                 linewidth=const.line_width, linestyle=style_line)
+                 linewidth=line_width, linestyle=style_line)
     elif isinstance(y_data, dict):
         y_labels = []
         for key in y_data.keys():
@@ -125,7 +129,7 @@ def graph(
                 if isinstance(style_line, str):
                     plt.plot(x_data, y_data[y_labels[i]],
                              label=cm.capital_first_letter(y_labels[i]), color=(r, g, b),
-                             linewidth=const.line_width, linestyle=style_line)
+                             linewidth=line_width, linestyle=style_line)
                 else:
 
                     if len(style_line) != len(y_labels):
@@ -138,7 +142,7 @@ def graph(
 
                     plt.plot(x_data, y_data[y_labels[i]],
                              label=cm.capital_first_letter(y_labels[i]), color=(r, g, b),
-                             linewidth=const.line_width, linestyle=style_line[i])
+                             linewidth=line_width, linestyle=style_line[i])
             else:
                 if not isinstance(colours, (list, np.ndarray)):
                     raise TypeError(
@@ -157,12 +161,12 @@ def graph(
                     if isinstance(style_line, str):
                         plt.plot(x_data, y_data[y_labels[i]],
                                  label=cm.capital_first_letter(y_labels[i]), color=colour,
-                                 linewidth=const.line_width, linestyle=style_line)
+                                 linewidth=line_width, linestyle=style_line)
 
                     else:
                         plt.plot(x_data, y_data[y_labels[i]],
                                  label=cm.capital_first_letter(y_labels[i]), color=colour,
-                                 linewidth=const.line_width, linestyle=style_line[i])
+                                 linewidth=line_width, linestyle=style_line[i])
 
     else:
         raise ValueError(
@@ -236,19 +240,19 @@ def histogram(
         colours=None,
         style='-',
 ):
+
     if isinstance(y_data, dict):
         y_arg_ = {}
         y_ = {}
         for key in y_data.keys():
             y_arg_[key] = smoothing.smooth(y_data[key], const.arg_smooth)
-            bin_num = int(int(max(y_arg_[key]) - min(y_arg_[key])) / const.bin_width)
-
+            bin_num = int(int((max(y_arg_[key]) - min(y_arg_[key])))/ const.bin_width)
             hist = np.histogram(y_arg_[key], bins=bin_num)
             hist_dist = scipy.stats.rv_histogram(hist)
             y_[key] = smoothing.smooth(hist_dist.pdf(x_data), const.pdf_smooth)
     elif isinstance(y_data, (list, np.ndarray)):
         y_arg_ = smoothing.smooth(y_data, const.arg_smooth)
-        bin_num = int(int(max(y_arg_) - min(y_arg_)) / const.bin_width)
+        bin_num = int((max(y_arg_) - min(y_arg_)) / const.bin_width)
         hist = np.histogram(y_arg_, bins=bin_num)
         hist_dist = scipy.stats.rv_histogram(hist)
         y_ = smoothing.smooth(hist_dist.pdf(x_data), const.pdf_smooth)
