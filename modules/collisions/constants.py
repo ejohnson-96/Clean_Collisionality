@@ -1,5 +1,5 @@
 import numpy as np
-from modules.core.rw import file_dir as fd
+from modules.core.loadsave import file_dir as fd
 from modules.core.system import config as sys_con
 from modules.core.variables import char_man as cm
 

@@ -2,7 +2,7 @@ from modules.core.time import tictoc as stopwatch, convert as converter
 from modules.core.constants import initialise_constants
 
 from constants import *
-from modules.core.system import input as inpt
+from modules.core.validate import input as inpt
 from modules.collisions.loadsave import loadsave as rw
 from modules.collisions.features import scrub as scrub, lat_lon as lat_lon, \
     scalar_generate as sc_gen
