@@ -10,9 +10,9 @@ def const(
     const.font_family = 'sans-serif'
     const.line_width = 2
 
-    const.pdf_smooth = 100
-    const.arg_smooth = 100
-    const.bin_width = 0.2
+    const.pdf_smooth = 5
+    const.arg_smooth = 5
+    const.bin_width = 0.4
 
     return
 

@@ -241,14 +241,14 @@ def histogram(
         y_ = {}
         for key in y_data.keys():
             y_arg_[key] = smoothing.smooth(y_data[key], const.arg_smooth)
-            bin_num = int(max(y_arg_[key]) - min(y_arg_[key]) / const.bin_width)
+            bin_num = int(int(max(y_arg_[key]) - min(y_arg_[key])) / const.bin_width)
 
             hist = np.histogram(y_arg_[key], bins=bin_num)
             hist_dist = scipy.stats.rv_histogram(hist)
             y_[key] = smoothing.smooth(hist_dist.pdf(x_data), const.pdf_smooth)
     elif isinstance(y_data, (list, np.ndarray)):
         y_arg_ = smoothing.smooth(y_data, const.arg_smooth)
-        bin_num = int((max(y_arg_) - min(y_arg_)) / const.bin_width)
+        bin_num = int(int(max(y_arg_) - min(y_arg_)) / const.bin_width)
         hist = np.histogram(y_arg_, bins=bin_num)
         hist_dist = scipy.stats.rv_histogram(hist)
         y_ = smoothing.smooth(hist_dist.pdf(x_data), const.pdf_smooth)

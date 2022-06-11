@@ -1,4 +1,5 @@
 import numpy as np
+from modules.collisions.model import theta_ap as theta_ap_
 
 t = 'time'
 p = 'proton'
@@ -28,20 +29,6 @@ def scalar_velocity(
         data[a]['v_mag'].append(np.sqrt(arg_a_))
 
     return data
-
-
-def validate_theta(
-        theta,
-):
-    for i in range(len(theta)):
-        if theta[i] > 15:
-            theta[i] = 15
-        elif theta[i] < 0:
-            theta[i] = 0
-        else:
-            pass
-
-    return theta
 
 
 def scalar_temps(
@@ -89,7 +76,7 @@ def scalar_temps(
         else:
             psp_result['dens_ap'][i] = solar_data[a]['na'][i] / solar_data[p]['np1'][i]
 
-    psp_result['theta_ap'] = validate_theta(psp_result['theta_ap'])
+    psp_result['theta_ap'] = theta_ap_.validate_theta(psp_result['theta_ap'], 3.2, 5)
 
     wind = spc_data['Wind_Temps.csv']
 
@@ -114,6 +101,6 @@ def scalar_temps(
 
         wind_result['wind_theta'][i] = wind['TEMP_ALPHA_S/C_eV'][i] /wind['TEMP_PROTN_S/C_eV'][i]
 
-    wind_result['wind_theta'] = validate_theta(wind_result['wind_theta'])
+    wind_result['wind_theta'] = theta_ap_.validate_theta(wind_result['wind_theta'])
 
     return psp_result, wind_result

@@ -196,13 +196,12 @@ theta_ap_0 = psp_scalar_temps['theta_ap']
 print('Note: Files have been generated and loaded in.', '\n')
 theta_ap_final = theta_ap.make_theta_vals(solar_data, spc_data, psp_scalar_temps, 1.0)
 
-theta = {'i': theta_ap_0, 'f': theta_ap_final}
+theta = {'i': theta_ap_0}
 
-print(len(theta_ap_0), len(theta_ap_final))
 
 X = np.linspace(0, 15, 1000)
 Y = theta
-line_style = ['solid', 'dashed']
+line_style = ['solid']
 
 graph.histogram(X, Y,  style=line_style,)
 

@@ -1,13 +1,47 @@
 import math
 import numpy as np
-from modules.collisions.constants import *
+from modules.collisions.constants import const as coll_const
+from modules.core.constants import const as core_const
+from modules.core.features import smooth as smoothing
 
-const()
+coll_const()
+core_const()
 
 t = 'time'
 p = 'proton'
 a = 'alpha'
 psp = 'PSP.csv'
+
+
+def validate_theta(
+        theta,
+        value=None,
+        rel_tol=None,
+):
+    for i in range(len(theta)):
+        if theta[i] > 15:
+            theta[i] = 15
+        elif theta[i] < 0:
+            theta[i] = 0
+        else:
+            pass
+
+    if value is None:
+        return theta
+    else:
+        if not isinstance(value, (float, int)):
+            raise TypeError(
+                "Error: Initial value must be a float or integer,"
+                f"instead got type {type(value)}"
+            )
+        else:
+            arg_min_ = value * (1 - rel_tol / 100)
+            arg_max_ = value * (1 + rel_tol / 100)
+
+            arg_ = theta[np.where((theta > arg_min_) & (theta < arg_max_))]
+            res = [x for x in theta if x not in arg_]
+
+            return smoothing.smooth(res, core_const.arg_smooth)
 
 
 def theta_ap_0(r_0, r_1, n_p_1, eta_ap, v_p_1, t_p_1, theta_ap_1,
@@ -61,7 +95,7 @@ def theta_ap_0(r_0, r_1, n_p_1, eta_ap, v_p_1, t_p_1, theta_ap_1,
                       ((theta_ap - 1.) * (eta_ap * theta_ap + 1.) ** 2.5 / (
                               theta_ap + mu_a) ** 1.5) * (lambda_ap) *
                       (d_r))
-        # print(d_theta_ap)
+
         theta_ap = theta_ap + d_theta_ap
 
         if (is_list_like):
@@ -91,8 +125,8 @@ def theta_loop(
 ):
     L = len(time)
     final_theta = np.zeros(L)
-    val = 0.0001
-    for i in range(int(val * L)):
+    val = 100
+    for i in range(int(val)):
         final_theta[i] = theta_ap_0(wind_radius[i], psp_radius[i], density_p[i],
                                     density_ap[i], speed[i], temp[i], theta[i])
         print('\r', f"{(i / L) * 100:.2f} %", end="")
