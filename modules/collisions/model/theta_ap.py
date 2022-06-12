@@ -15,9 +15,6 @@ psp = 'PSP.csv'
 
 def validate_theta(
         theta,
-        value=None,
-        rel_tol=None,
-        smooth_=core_const.smooth,
 ):
     for i in range(len(theta)):
         if theta[i] > 15:
@@ -26,6 +23,17 @@ def validate_theta(
             theta[i] = 0
         else:
             pass
+
+    return theta
+
+
+
+def remove_theta(
+        theta,
+        value,
+        rel_tol,
+        smooth_ = core_const.smooth,
+):
 
     if value is None:
         return theta

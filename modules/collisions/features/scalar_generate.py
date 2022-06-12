@@ -80,11 +80,7 @@ def scalar_temps(
         else:
             psp_result['dens_ap'][i] = solar_data[a]['na'][i] / solar_data[p]['np1'][i]
 
-    if value and rel_tol is None:
-        psp_result['theta_ap'] = theta_ap_.validate_theta(psp_result['theta_ap'])
-    else:
-        #isinstance
-        psp_result['theta_ap'] = theta_ap_.validate_theta(psp_result['theta_ap'], value, rel_tol, smooth_)
+    psp_result['theta_ap'] = theta_ap_.validate_theta(psp_result['theta_ap'])
 
     wind = spc_data['Wind_Temps.csv']
 
