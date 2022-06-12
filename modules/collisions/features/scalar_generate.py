@@ -1,5 +1,6 @@
 import numpy as np
 from modules.collisions.model import theta_ap as theta_ap_
+from modules.core.constants import const as core_const
 
 t = 'time'
 p = 'proton'
@@ -36,6 +37,7 @@ def scalar_temps(
         spc_data,
         value=None,
         rel_tol=None,
+        smooth_=core_const.smooth,
 ):
 
     factor = 11604
@@ -82,7 +84,7 @@ def scalar_temps(
         psp_result['theta_ap'] = theta_ap_.validate_theta(psp_result['theta_ap'])
     else:
         #isinstance
-        psp_result['theta_ap'] = theta_ap_.validate_theta(psp_result['theta_ap'], value, rel_tol)
+        psp_result['theta_ap'] = theta_ap_.validate_theta(psp_result['theta_ap'], value, rel_tol, smooth_)
 
     wind = spc_data['Wind_Temps.csv']
 

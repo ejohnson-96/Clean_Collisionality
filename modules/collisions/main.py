@@ -191,8 +191,8 @@ for i in range(len(solar_data[p][t])):
 # Generate temperatures and velocity magnitudes
 print('Generating velocity magnitudes and temperature file... \n')
 scalar_velocity = sc_gen.scalar_velocity(solar_data)
-guess_values = [11.5,3.4,0]
-psp_scalar_temps, wind_scalar_temps = sc_gen.scalar_temps(solar_data, spc_data, value=3.4, rel_tol=4)
+guess_values = [11.5,3.4,7.8,0,3.2]
+psp_scalar_temps, wind_scalar_temps = sc_gen.scalar_temps(solar_data, spc_data, value=3.2, rel_tol=3, smooth_=1)
 theta_ap_0 = psp_scalar_temps['theta_ap']
 print('Note: Files have been generated and loaded in.', '\n')
 theta_ap_final = theta_ap.make_theta_vals(solar_data, spc_data, psp_scalar_temps, 1.0)
@@ -205,10 +205,23 @@ Y = theta
 
 line_colour = ['black', 'blue']
 style = ['-', '--']
-graph.histogram(X, Y, width=3)
+
+graph_title = ''
+graph_x_labal = r'$\alpha$-Proton Relative Temperature'
+graph_y_label = 'Probability'
+l_color = ['black']
+l_style = ['--']
+
+graph.histogram(X, Y, width=3, bin_number=0.2, smooth_=1, colours=l_color, style=l_style, x_axis=graph_x_labal, title=graph_title, y_axis=graph_y_label)
 
 x, y = error.loop_uncer(solar_data, psp_scalar_temps)
-print(y)
-graph.graph(x, y, colours=line_colour, style_line=style, title='', x_axis='Interval Length', y_axis=r'Medium $\sigma_{std}$')
+
+
+graph_x_labal = 'Interval Length'
+graph_y_label = r'Medium $\sigma_{std}$'
+l_color = ['black','blue']
+l_style = ['--','-']
+
+graph.graph(x, y, colours=line_colour, style_line=style, title=graph_title, x_axis=graph_x_labal, y_axis=graph_y_label, x_log=True, y_log=True)
 
 stopwatch.end_time()

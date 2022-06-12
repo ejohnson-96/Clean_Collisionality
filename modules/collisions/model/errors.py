@@ -9,8 +9,7 @@ def loop_uncer(
         solar_data,
         psp_scalar_temps,
 ):
-    intervals_per_day = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 20, 23, 48,
-                         96, 192]
+    intervals_per_day = [i+1 for i in range(191)]
     interval_length = [24. / i for i in intervals_per_day]
     vals_ = {}
     particle_list = []

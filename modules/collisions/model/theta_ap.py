@@ -17,6 +17,7 @@ def validate_theta(
         theta,
         value=None,
         rel_tol=None,
+        smooth_=core_const.smooth,
 ):
     for i in range(len(theta)):
         if theta[i] > 15:
@@ -47,7 +48,7 @@ def validate_theta(
                 arg_ = theta[np.where((theta > arg_min_) & (theta < arg_max_))]
                 res = [x for x in theta if x not in arg_]
 
-                return smoothing.smooth(res, core_const.arg_smooth)
+                return smoothing.smooth(res, smooth_)
 
 
 def theta_ap_0(r_0, r_1, n_p_1, eta_ap, v_p_1, t_p_1, theta_ap_1,
