@@ -16,37 +16,44 @@ const()
 def colours_validate(
         colours,
 ):
+    colors = dict(mcolors.BASE_COLORS, **mcolors.CSS4_COLORS)
+    by_hsv = sorted((tuple(mcolors.rgb_to_hsv(mcolors.to_rgba(color)[:3])), name)
+                    for name, color in colors.items())
+    valid_colors = [name for hsv, name in by_hsv]
+
     if colours is None:
         raise ValueError(
             "Error: No colours were provided."
         )
     else:
-
-        if not isinstance(colours, list):
+        res = []
+        if isinstance(colours, list):
+            for color in colours:
+                if not isinstance(color, str):
+                    raise ValueError(
+                        f"Error: The entry {color} in colours, is not a "
+                        f"string, instead got type {type(color)}."
+                    )
+                elif color not in valid_colors:
+                    raise ValueError(
+                        f"Error: The entry {color} in colours is not "
+                        "supported, please try another colour."
+                    )
+                else:
+                    res.append(color)
+        elif isinstance(colours, str):
+            if colours in valid_colors:
+                return colours
+            else:
+                raise TypeError(
+                    "Error: Colours must be a list, instead "
+                    f"got type {type(colours)}."
+                )
+        else:
             raise TypeError(
                 "Error: Colours must be a list, instead "
                 f"got type {type(colours)}."
             )
-
-        colors = dict(mcolors.BASE_COLORS, **mcolors.CSS4_COLORS)
-        by_hsv = sorted((tuple(mcolors.rgb_to_hsv(mcolors.to_rgba(color)[:3])), name)
-                        for name, color in colors.items())
-        valid_colors = [name for hsv, name in by_hsv]
-        res = []
-
-        for color in colours:
-            if not isinstance(color, str):
-                raise ValueError(
-                    f"Error: The entry {color} in colours, is not a "
-                    f"string, instead got type {type(color)}."
-                )
-            elif color not in valid_colors:
-                raise ValueError(
-                    f"Error: The entry {color} in colours is not "
-                    "supported, please try another colour."
-                )
-            else:
-                res.append(color)
 
     return res
 
