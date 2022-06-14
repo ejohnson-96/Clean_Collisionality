@@ -56,7 +56,7 @@ while h > 0:
 
 # Generate directory strings for encounters
 encounter_number = encount
-enc(encount, valid_enc, False)
+enc(encount, valid_enc, True)
 print('\n')
 error_files = enc.error_files_loaded
 mm_data = rw.encounter_import(encount, valid_enc, error_files)
@@ -96,7 +96,7 @@ for x in enc.encounter:
 
 lengths = [mm_len_max, error_len_max, sc_len_max]
 max_len = max(lengths)
-min_len = 20000
+min_len = max_len
 
 if max_len == lengths[0]:
     t_ = mm_data[arg_encount_][arg_mm_file][t]
@@ -111,7 +111,7 @@ for x in enc.encounter:
         for z in mm_data[x][y].keys():
             fp = mm_data[x][y][z]
             mm_data[x][y][z] = np.interp(t_, xp, fp)
-            mm_data[x][y][z] = np.resize(mm_data[x][y][z], min_len)
+            #mm_data[x][y][z] = np.resize(mm_data[x][y][z], min_len)
 
     if error_files:
         for y in error_data[x].keys():
@@ -119,26 +119,60 @@ for x in enc.encounter:
             for z in error_data[x][y].keys():
                 fp = error_data[x][y][z]
                 error_data[x][y][z] = np.interp(t_, xp, fp)
-                error_data[x][y][z] = np.resize(error_data[x][y][z], min_len)
+                #error_data[x][y][z] = np.resize(error_data[x][y][z], min_len)
 
     for y in sc_data[x].keys():
         xp = sc_data[x][y][t]
         for z in sc_data[x][y].keys():
             fp = sc_data[x][y][z]
             sc_data[x][y][z] = np.interp(t_, xp, fp)
-            sc_data[x][y][z] = np.resize(sc_data[x][y][z], min_len)
+            #sc_data[x][y][z] = np.resize(sc_data[x][y][z], min_len)
 
 #scalar temp gen/remove theta vals and h5g files
 
-# Generate file and/or combine files
+# Generate temperatures and velocity magnitudes
+print('Generating velocity magnitudes and temperature file... \n')
+scalar_velocity = sc_gen.scalar_velocity(mm_data)
+psp_temps, wind_temps = sc_gen.scalar_temps(mm_data, sc_data)
+
+tol_value = 5
+guess = {4: 11.5, 6: 3.5, 7: 7.8}
+if encounter_number == 0:
+    for encount in valid_enc:
+        psp_temps[encount]['theta_ap'] = theta_ap.remove_theta(psp_temps[encount]['theta_ap'], guess[encount], tol_value)
+else:
+    arg_ = str('E' + str(encounter_number))
+    psp_temps[arg_]['theta_ap'] = theta_ap.remove_theta(psp_temps[arg_]['theta_ap'], guess[encounter_number], tol_value)
+
+# Generate file and/or combine files (remember to do the scalar temp files)
 print('Generating data file... \n')
 solar_data = {}
 errors = {}
 spc_data = {}
+psp_scalar_temps = {}
+wind_scalar_temps = {}
 
 for particle in particle_list:
     solar_data[particle] = {}
     errors[particle] = {}
+
+for key in psp_temps.keys():
+    for value in psp_temps[key].keys():
+        psp_scalar_temps[value] = []
+
+for key in wind_temps.keys():
+    for value in wind_temps[key].keys():
+        wind_scalar_temps[value] = []
+
+for key in psp_scalar_temps.keys():
+    for encount in psp_temps.keys():
+        for i in range(len(psp_temps[encount][key])):
+            psp_scalar_temps[key].append(psp_temps[encount][key][i])
+
+for key in wind_scalar_temps.keys():
+    for encount in wind_temps.keys():
+        for i in range(len(wind_temps[encount][key])):
+            wind_scalar_temps[key].append(wind_temps[encount][key][i])
 
 for x in range(1):
     encount = enc.encounter[x]
@@ -183,9 +217,9 @@ for x in range(enc.num_of_encs):
         if error_files:
             for z in errors[particle].keys():
                 for w in range(
-                        len(error_data[encount][enc.encounter_names[2 * x + arg_x_]][z])):
+                        len(error_data[encount][enc.encounter_errors[2 * x + arg_x_]][z])):
                     errors[particle][z].append(
-                        error_data[encount][enc.encounter_names[2 * x + arg_x_]][z][w])
+                        error_data[encount][enc.encounter_errors[2 * x + arg_x_]][z][w])
 
     for y in enc.sc_names:
         for z in spc_data[y].keys():
@@ -203,25 +237,22 @@ solar_data[t] = []
 for i in range(len(solar_data[p][t])):
     solar_data[t].append(converter.epoch_time(solar_data[p][t][i]))
 
-# Generate temperatures and velocity magnitudes
-print('Generating velocity magnitudes and temperature file... \n')
-scalar_velocity = sc_gen.scalar_velocity(solar_data)
-psp_scalar_temps, wind_scalar_temps = sc_gen.scalar_temps(solar_data, spc_data, )
-
-guess = {0: 3.2, 4: 11.5, 6: 3.5, 7: 7.8}
-for i in valid_enc:
-    if i is encounter_number:
-        print(i, encounter_number)
-        guess_value = guess[i]
-tol_value = 5
-
-#psp_scalar_temps['theta_ap'] = theta_ap.remove_theta(psp_scalar_temps['theta_ap'],3.2, tol_value)
-
 theta_ap_0 = psp_scalar_temps['theta_ap']
 #theta_ap_final = theta_ap.make_theta_vals(solar_data, spc_data, psp_scalar_temps, 1.0)
 print('Note: Files have been generated and loaded in.', '\n')
 
-theta = {'i': theta_ap_0, }
+uncertain = error.sigma_value(solar_data, errors, psp_scalar_temps)
+
+X = np.linspace(0, 15, 1000)
+Y = uncertain[p]['Scalar Temp']
+
+graph.histogram(X, Y)
+
+
+
+
+
+theta = {'i': theta_ap_0 }
 print(theta)
 X = np.linspace(0, 15, 1000)
 Y = theta
@@ -232,8 +263,8 @@ sn = 1
 graph_title = ''
 graph_x_labal = r'$\alpha$-Proton Relative Temperature'
 graph_y_label = 'Probability'
-l_color = ['black']
-l_style = ['--']
+l_color = ['black',]
+l_style = ['--',]
 
 graph.histogram(X, Y, width=2, bin_number=bn, smooth_=sn, colours=l_color, style=l_style,
                 x_axis=graph_x_labal, title=graph_title, y_axis=graph_y_label)
