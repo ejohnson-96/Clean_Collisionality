@@ -50,7 +50,8 @@ def scalar_temps(
 
     for key in solar_data.keys():
         for value in solar_data[key].keys():
-            L = len(solar_data[key][value])
+            for element in solar_data[key][value].keys():
+                L = len(solar_data[key][value][element])
 
     psp_result = {}
     psp_result_keys = ['proton_scalar_temp_1', 'proton_scalar_temp_2',
@@ -108,8 +109,6 @@ def scalar_temps(
                 psp_result['dens_ap'][i] = 0
             else:
                 psp_result['dens_ap'][i] = solar_data[encount][a]['na'][i] / solar_data[encount][p]['np1'][i]
-            psp_result['theta_ap'] = theta_ap_.validate_theta(psp_result['theta_ap'])
-            res_psp[encount] = psp_result
 
 
             arg_ = spc_data[encount]['Wind_Temps.csv']['TEMP_ALPHA_S/C_eV'][i]
@@ -125,8 +124,14 @@ def scalar_temps(
                 wind['TEMP_PROTN_S/C_eV'][i] = 10*30
 
             wind_result['wind_theta'][i] = wind['TEMP_ALPHA_S/C_eV'][i] /wind['TEMP_PROTN_S/C_eV'][i]
-            wind_result['wind_theta'] = theta_ap_.validate_theta(wind_result['wind_theta'])
-            res_wind[encount] = wind_result
+
+            print('\r', f"{(i/ L) * 100:.2f} %",)
+
+        psp_result['theta_ap'] = theta_ap_.validate_theta(psp_result['theta_ap'])
+        wind_result['wind_theta'] = theta_ap_.validate_theta(wind_result['wind_theta'])
+
+        res_psp[encount] = psp_result
+        res_wind[encount] = wind_result
 
 
     return res_psp, res_wind

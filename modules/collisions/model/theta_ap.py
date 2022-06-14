@@ -147,7 +147,7 @@ def theta_loop(
 ):
     L = len(time)
     final_theta = np.zeros(L)
-    val = L
+    val = L*0.01
     for i in range(int(val)):
         final_theta[i] = theta_ap_0(wind_radius[i], psp_radius[i], density_p[i],
                                     density_ap[i], speed[i], temp[i], theta[i])

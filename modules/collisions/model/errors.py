@@ -55,7 +55,7 @@ def gen_uncer(
 
         if len(tk_d) < 4:
             continue
-
+        print(tk_d)
         tp_s = temp_p[tk_d]
         ta_s = temp_a[tk_d]
         dy_d = days[tk_d] - (d + t_min)
@@ -84,10 +84,7 @@ def sigma_value(
         error_data,
         scalar_temps,
 ):
-    print(error_data.keys())
-    for key in error_data.keys():
-        for value in error_data[key].keys():
-            print(value)
+    print(scalar_temps)
     proton_temp = scalar_temps['proton_scalar_temp_1']
     alpha_temp = scalar_temps['alpha_scalar_temp']
     p_s_e_x = error_data[p]['dV1x']
@@ -96,8 +93,8 @@ def sigma_value(
     a_s_e_x = error_data[a]['dVx']
     a_s_e_y = error_data[a]['dVy']
     a_s_e_z = error_data[a]['dVz']
-    proton_speed = solar_data[p]['vmag']
-    alpha_speed = solar_data[a]['vmag']
+    proton_speed = solar_data[p]['v_mag']
+    alpha_speed = solar_data[a]['v_mag']
     proton_density = solar_data[p]['np1']
     alpha_density = solar_data[a]['na']
     proton_isotropy = scalar_temps['proton_R']
@@ -108,32 +105,53 @@ def sigma_value(
     alpha_error_density = error_data[a]['dn']
     proton_error_isotropy = error_data[p]['dR1']
     alpha_error_isotropy = error_data[a]['dR']
-    proton_error_tpar = proton_error_isotropy * proton_error_tperp
-    alpha_error_tpar = alpha_error_isotropy * alpha_error_tperp
+
 
     #par/pere
+    L = len(solar_data['time'])
+    proton_temp_error = np.zeros(L)
+    alpha_temp_error = np.zeros(L)
+    proton_error_over_temp = np.zeros(L)
+    alpha_error_over_temp = np.zeros(L)
+    proton_error_over_dense = np.zeros(L)
+    alpha_error_over_dens = np.zeros(L)
+    proton_error_over_isotropy = np.zeros(L)
+    alpha_error_over_isotropy = np.zeros(L)
+    proton_error_speed = np.zeros(L)
+    alpha_error_speed = np.zeros(L)
+    proton_error_over_speed = np.zeros(L)
+    alpha_error_over_speed = np.zeros(L)
 
-    proton_temp_error = np.sqrt((2*proton_error_tperp)**2+(proton_error_tpar**2))/3
-    alpha_temp_error = np.sqrt((alpha_error_tperp)**2+(alpha_error_tpar)**2)/3
+    proton_error_tpar = np.zeros(L)
+    alpha_error_tpar = np.zeros(L)
 
-    proton_error_over_temp = proton_temp_error/proton_temp
-    alpha_error_over_temp = alpha_temp_error/alpha_temp
+    for i in range(L):
+        proton_error_tpar[i] = proton_error_isotropy[i] * proton_error_tperp[i]
+        alpha_error_tpar[i] = alpha_error_isotropy[i] * alpha_error_tperp[i]
 
-    proton_error_over_dense = proton_error_density/proton_density
-    alpha_error_over_dens = alpha_error_density/alpha_density
+        proton_temp_error[i] = np.sqrt((2*proton_error_tperp[i])**2+(proton_error_tpar[i]**2))/3
+        alpha_temp_error[i] = np.sqrt((alpha_error_tperp[i])**2+(alpha_error_tpar[i])**2)/3
 
-    proton_error_over_isotropy = proton_error_isotropy/proton_isotropy
-    alpha_error_over_isotropy = alpha_error_isotropy/alpha_isotropy
+        proton_error_over_temp[i] = proton_temp_error[i]/proton_temp[i]
+        alpha_error_over_temp[i] = alpha_temp_error[i]/alpha_temp[i]
 
-    proton_error_speed = np.sqrt(p_s_e_x**2+p_s_e_y**2+p_s_e_z**2)
-    alpha_error_speed = np.sqrt(a_s_e_z**2 + a_s_e_y**2 + a_s_e_x**2)
+        proton_error_over_temp_perp[i]
 
-    proton_error_over_speed = proton_error_speed/proton_speed
-    alpha_error_over_speed = alpha_error_speed/alpha_speed
+        proton_error_over_dense[i] = proton_error_density[i]/proton_density[i]
+        alpha_error_over_dens[i] = alpha_error_density[i]/alpha_density[i]
+
+        proton_error_over_isotropy[i] = proton_error_isotropy[i]/proton_isotropy[i]
+        alpha_error_over_isotropy[i] = alpha_error_isotropy[i]/alpha_isotropy[i]
+
+        proton_error_speed[i] = np.sqrt(p_s_e_x[i]**2+p_s_e_y[i]**2+p_s_e_z[i]**2)
+        alpha_error_speed[i] = np.sqrt(a_s_e_z[i]**2 + a_s_e_y[i]**2 + a_s_e_x[i]**2)
+
+        proton_error_over_speed[i] = proton_error_speed[i]/proton_speed[i]
+        alpha_error_over_speed[i] = alpha_error_speed[i]/alpha_speed[i]
 
     res = {}
-    res[p] = {'Scalar Temp': proton_error_over_temp, 'Density': proton_error_over_dense, 'Speed': proton_error_speed, 'Isotropy': proton_error_over_isotropy}
-    res[a] = {'Scalar Temp': alpha_error_over_temp, 'Density': alpha_error_over_dens, 'Speed': alpha_error_speed, 'Isotropy': alpha_error_over_isotropy}
+    res[p] = {'Scalar Temp': proton_error_over_temp, 'Density': proton_error_over_dense, 'Speed': proton_error_over_speed, 'Isotropy': proton_error_over_isotropy}
+    res[a] = {'Scalar Temp': alpha_error_over_temp, 'Density': alpha_error_over_dens, 'Speed': alpha_error_over_speed, 'Isotropy': alpha_error_over_isotropy}
 
 
     return res

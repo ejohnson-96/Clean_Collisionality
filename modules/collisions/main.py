@@ -236,24 +236,20 @@ spc_data[enc.sc_names[1]] = lat_lon.latlong_wind(spc_data[enc.sc_names[1]])
 solar_data[t] = []
 for i in range(len(solar_data[p][t])):
     solar_data[t].append(converter.epoch_time(solar_data[p][t][i]))
-
 theta_ap_0 = psp_scalar_temps['theta_ap']
 #theta_ap_final = theta_ap.make_theta_vals(solar_data, spc_data, psp_scalar_temps, 1.0)
 print('Note: Files have been generated and loaded in.', '\n')
 
 uncertain = error.sigma_value(solar_data, errors, psp_scalar_temps)
 
+
 X = np.linspace(0, 15, 1000)
-Y = uncertain[p]['Scalar Temp']
 
-graph.histogram(X, Y)
-
-
-
-
+Y= uncertain[p]['Scalar Temp']
+graph.histogram(X, Y, limits=True, x_lim=1)
 
 theta = {'i': theta_ap_0 }
-print(theta)
+
 X = np.linspace(0, 15, 1000)
 Y = theta
 
