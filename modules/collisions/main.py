@@ -1,3 +1,5 @@
+import numpy as np
+
 from modules.core.time import tictoc as stopwatch, convert as converter
 from modules.core.constants import initialise_constants
 
@@ -9,6 +11,9 @@ from modules.collisions.features import scrub as scrub, lat_lon as lat_lon, \
 from modules.core.variables import num_man as nm
 from modules.core.features import graph as graph
 from modules.collisions.model import theta_ap as theta_ap, errors as error
+from scipy.optimize import curve_fit
+import matplotlib.pyplot as plt
+import math
 
 stopwatch.start_time()
 initialise_constants()
@@ -50,6 +55,7 @@ while h > 0:
         print('Error: Please make a valid selection.')
 
 # Generate directory strings for encounters
+encounter_number = encount
 enc(encount, valid_enc, False)
 print('\n')
 error_files = enc.error_files_loaded
@@ -87,8 +93,10 @@ for x in enc.encounter:
             arg_encount_ = x
             arg_sc_file = y
 
+
 lengths = [mm_len_max, error_len_max, sc_len_max]
 max_len = max(lengths)
+min_len = 20000
 
 if max_len == lengths[0]:
     t_ = mm_data[arg_encount_][arg_mm_file][t]
@@ -103,6 +111,7 @@ for x in enc.encounter:
         for z in mm_data[x][y].keys():
             fp = mm_data[x][y][z]
             mm_data[x][y][z] = np.interp(t_, xp, fp)
+            mm_data[x][y][z] = np.resize(mm_data[x][y][z], min_len)
 
     if error_files:
         for y in error_data[x].keys():
@@ -110,12 +119,16 @@ for x in enc.encounter:
             for z in error_data[x][y].keys():
                 fp = error_data[x][y][z]
                 error_data[x][y][z] = np.interp(t_, xp, fp)
+                error_data[x][y][z] = np.resize(error_data[x][y][z], min_len)
 
     for y in sc_data[x].keys():
         xp = sc_data[x][y][t]
         for z in sc_data[x][y].keys():
             fp = sc_data[x][y][z]
             sc_data[x][y][z] = np.interp(t_, xp, fp)
+            sc_data[x][y][z] = np.resize(sc_data[x][y][z], min_len)
+
+#scalar temp gen/remove theta vals and h5g files
 
 # Generate file and/or combine files
 print('Generating data file... \n')
@@ -169,8 +182,10 @@ for x in range(enc.num_of_encs):
                     mm_data[encount][enc.encounter_names[2 * x + arg_x_]][z][w])
         if error_files:
             for z in errors[particle].keys():
-                for w in range(len(error_data[encount][enc.encounter_names[2*x + arg_x_]][z])):
-                    errors[particle][z].append(error_data[encount][enc.encounter_names[2 * x + arg_x_]][z][w])
+                for w in range(
+                        len(error_data[encount][enc.encounter_names[2 * x + arg_x_]][z])):
+                    errors[particle][z].append(
+                        error_data[encount][enc.encounter_names[2 * x + arg_x_]][z][w])
 
     for y in enc.sc_names:
         for z in spc_data[y].keys():
@@ -180,7 +195,7 @@ for x in range(enc.num_of_encs):
 print('Scrubbing data...')
 # solar_data, errors, spc_data = scrub.scrub_data(solar_data, errors, spc_data)
 
-spc_data[enc.sc_names[0]] = lat_lon.latlong_psp(spc_data[enc.sc_names[0]])
+spc_data[enc.sc_names[2]] = lat_lon.latlong_psp(spc_data[enc.sc_names[2]])
 spc_data[enc.sc_names[1]] = lat_lon.latlong_wind(spc_data[enc.sc_names[1]])
 
 # Generate single time set for the whole data set in appropriate unit
@@ -191,22 +206,25 @@ for i in range(len(solar_data[p][t])):
 # Generate temperatures and velocity magnitudes
 print('Generating velocity magnitudes and temperature file... \n')
 scalar_velocity = sc_gen.scalar_velocity(solar_data)
-psp_scalar_temps, wind_scalar_temps = sc_gen.scalar_temps(solar_data, spc_data,)
-psp_scalar_temps['theta_ap'] = theta_ap.remove_theta(psp_scalar_temps['theta_ap'], 3.4, 5)
+psp_scalar_temps, wind_scalar_temps = sc_gen.scalar_temps(solar_data, spc_data, )
+
+guess = {0: 3.2, 4: 11.5, 6: 3.5, 7: 7.8}
+for i in valid_enc:
+    if i is encounter_number:
+        print(i, encounter_number)
+        guess_value = guess[i]
+tol_value = 5
+
+#psp_scalar_temps['theta_ap'] = theta_ap.remove_theta(psp_scalar_temps['theta_ap'],3.2, tol_value)
+
 theta_ap_0 = psp_scalar_temps['theta_ap']
+#theta_ap_final = theta_ap.make_theta_vals(solar_data, spc_data, psp_scalar_temps, 1.0)
 print('Note: Files have been generated and loaded in.', '\n')
-theta_ap_final = theta_ap.make_theta_vals(solar_data, spc_data, psp_scalar_temps, 1.0)
 
-theta = {'i': theta_ap_0}
-
-
-guess_values = [11.5,3.4,7.8,0,3.2]
-
+theta = {'i': theta_ap_0, }
+print(theta)
 X = np.linspace(0, 15, 1000)
 Y = theta
-
-line_colour = ['black', 'blue']
-style = ['-', '--']
 
 bn = 0.2
 sn = 1
@@ -217,16 +235,40 @@ graph_y_label = 'Probability'
 l_color = ['black']
 l_style = ['--']
 
-graph.histogram(X, Y, width=3, bin_number=bn, smooth_=sn, colours=l_color, style=l_style, x_axis=graph_x_labal, title=graph_title, y_axis=graph_y_label)
+graph.histogram(X, Y, width=2, bin_number=bn, smooth_=sn, colours=l_color, style=l_style,
+                x_axis=graph_x_labal, title=graph_title, y_axis=graph_y_label)
 
 x, y = error.loop_uncer(solar_data, psp_scalar_temps)
 
 
 graph_x_labal = 'Interval Length'
 graph_y_label = r'Medium $\sigma_{std}$'
-l_color = ['black','blue']
-l_style = ['--','-']
+l_color = ['black', 'blue']
+l_style = ['--', '-']
 
-graph.graph(x, y, colours=line_colour, style_line=style, title=graph_title, x_axis=graph_x_labal, y_axis=graph_y_label, x_log=True, y_log=True)
+
+graph.graph(x, y, colours=l_color, style_line=l_style, title=graph_title, x_axis=graph_x_labal, y_axis=graph_y_label, x_log=True, y_log=True)
+
+
+def maxwellian(x, r, m, s, ):
+    return (r / (s * np.sqrt(math.pi))) * np.exp(- (x - m) ** 2 / (2 * (s ** 2)))
+
+
+def fit_function(x, r, m, s, q, n, t, ):
+    return maxwellian(x, r, m, s) + maxwellian(x, q, -n, t)
+
+
+data_entries, bins = np.histogram(theta['i'], bins=70)
+
+binscenters = np.array([0.5 * (bins[i] + bins[i + 1]) for i in range(len(bins) - 1)])
+popt, pcov = curve_fit(fit_function, xdata=binscenters, ydata=data_entries, )
+
+xspace = np.linspace(0, 15, 1000)
+yspace = fit_function(xspace, *popt)
+
+graph.graph(xspace, yspace)
 
 stopwatch.end_time()
+
+
+#graphs from research pics as function, remeber to convert hgf sigma/t graph density aslo te

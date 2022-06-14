@@ -35,9 +35,6 @@ def scalar_velocity(
 def scalar_temps(
         solar_data,
         spc_data,
-        value=None,
-        rel_tol=None,
-        smooth_=core_const.smooth,
 ):
 
     factor = 11604
@@ -47,7 +44,7 @@ def scalar_temps(
     psp_result_keys = ['proton_scalar_temp_1', 'proton_scalar_temp_2',
                        'alpha_scalar_temp', 'theta_ap', 'dens_ap',
                        'proton_perpar', 'alpha_perpar', 'proton_1_k', 'alpha_k', 'time',
-                       'proton_R', 'alpha_R']
+                       'proton_R', 'alpha_R',]
 
     for res_key in psp_result_keys:
         psp_result[res_key] = np.zeros(L)

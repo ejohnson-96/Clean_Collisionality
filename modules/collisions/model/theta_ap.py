@@ -34,7 +34,7 @@ def remove_theta(
         rel_tol,
         smooth_ = core_const.smooth,
 ):
-
+    L = len(theta)
     if value is None:
         return theta
     else:
@@ -54,9 +54,16 @@ def remove_theta(
                 arg_max_ = value * (1 + rel_tol / 100)
 
                 arg_ = theta[np.where((theta > arg_min_) & (theta < arg_max_))]
-                res = [x for x in theta if x not in arg_]
+                try:
+                    arg_v2 = [x for x in theta if x not in arg_]
+                    arg_v3 = np.array(smoothing.smooth(arg_v2, smooth_))
+                    arg_v4 = np.resize(arg_v3, L)
+                    res = arg_v4.tolist()
+                except:
+                    res = np.array(smoothing.smooth(theta, smooth_))
 
-                return smoothing.smooth(res, smooth_)
+                return res
+
 
 
 def theta_ap_0(r_0, r_1, n_p_1, eta_ap, v_p_1, t_p_1, theta_ap_1,
@@ -77,7 +84,7 @@ def theta_ap_0(r_0, r_1, n_p_1, eta_ap, v_p_1, t_p_1, theta_ap_1,
     theta_ap = theta_ap_1
 
     theta_ap_min = 0.01
-    theta_ap_max = 100.
+    theta_ap_max = 25.
 
     try:
         is_list_like = True
@@ -140,10 +147,12 @@ def theta_loop(
 ):
     L = len(time)
     final_theta = np.zeros(L)
-    val = 100
+    val = 10 #L*0.1
     for i in range(int(val)):
         final_theta[i] = theta_ap_0(wind_radius[i], psp_radius[i], density_p[i],
                                     density_ap[i], speed[i], temp[i], theta[i])
+        print(wind_radius[i], psp_radius[i], density_p[i], density_ap[i],speed[i],temp[i], theta[i])
+        print(final_theta[i])
         print('\r', f"{(i / L) * 100:.2f} %", end="")
 
     return final_theta
@@ -218,8 +227,7 @@ def make_theta_vals(
     wind_radius = np.full(shape=len(spc_data['Wind_Orbit.csv'][t]),
                           fill_value=wind_radius_,
                           dtype=float)
-
-    psp_radius = spc_data[psp]['radius']
+    psp_radius = spc_data[psp]['RADIAL_DISTANCE_AU']
 
     final_theta = theta_loop(time, wind_radius, psp_radius, density_p, density_ap, speed,
                              temp, theta)
