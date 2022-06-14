@@ -255,12 +255,16 @@ def histogram(
         for key in y_data.keys():
             y_arg_[key] = smoothing.smooth(y_data[key], smooth_)
             bin_num = int(int((max(y_arg_[key]) - min(y_arg_[key])))/ bin_number)
+            if bin_num == 0:
+                bin_num = 1
             hist = np.histogram(y_arg_[key], bins=bin_num)
             hist_dist = scipy.stats.rv_histogram(hist)
             y_[key] = smoothing.smooth(hist_dist.pdf(x_data), smooth_)
     elif isinstance(y_data, (list, np.ndarray)):
         y_arg_ = smoothing.smooth(y_data, smooth_)
         bin_num = int((max(y_arg_) - min(y_arg_)) / bin_number)
+        if bin_num == 0:
+            bin_num = 1
         hist = np.histogram(y_arg_, bins=bin_num)
         hist_dist = scipy.stats.rv_histogram(hist)
         y_ = smoothing.smooth(hist_dist.pdf(x_data), smooth_)
@@ -275,3 +279,4 @@ def histogram(
           y_log, x_log, colours, style, line_width=width)
 
     return
+
