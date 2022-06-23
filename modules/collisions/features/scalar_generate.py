@@ -11,11 +11,13 @@ def scalar_velocity(
         data,
 ):
 
-    file_val = []
     for key in data.keys():
         encount = key
+        file_val = []
+
         for value in data[key].keys():
             file_val.append(value)
+            print(value)
         p = file_val[0]
         a = file_val[1]
 
@@ -37,7 +39,6 @@ def scalar_velocity(
 
             data[encount][p]['v_mag'].append(np.sqrt(arg_p_))
             data[encount][a]['v_mag'].append(np.sqrt(arg_a_))
-
     return data
 
 
@@ -73,9 +74,10 @@ def scalar_temps(
     for i in range(len(wind_result_keys)):
         wind_result[wind_result_keys[i]] = np.zeros(L)
 
-    file_val = []
+
     for key in solar_data.keys():
         encount = key
+        file_val = []
         wind = spc_data[encount]['Wind_Temps.csv']
         for value in solar_data[key].keys():
             file_val.append(value)
@@ -124,8 +126,6 @@ def scalar_temps(
                 wind['TEMP_PROTN_S/C_eV'][i] = 10*30
 
             wind_result['wind_theta'][i] = wind['TEMP_ALPHA_S/C_eV'][i] /wind['TEMP_PROTN_S/C_eV'][i]
-
-            print('\r', f"{(i/ L) * 100:.2f} %",)
 
         psp_result['theta_ap'] = theta_ap_.validate_theta(psp_result['theta_ap'])
         wind_result['wind_theta'] = theta_ap_.validate_theta(wind_result['wind_theta'])

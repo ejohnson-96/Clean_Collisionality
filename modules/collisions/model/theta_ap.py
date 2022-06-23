@@ -32,8 +32,10 @@ def remove_theta(
         theta,
         value,
         rel_tol,
-        smooth_ = core_const.smooth,
+        smooth_=core_const.smooth,
 ):
+    print(type(theta))
+    print('cunt')
     L = len(theta)
     if value is None:
         return theta
@@ -57,8 +59,7 @@ def remove_theta(
                 try:
                     arg_v2 = [x for x in theta if x not in arg_]
                     arg_v3 = np.array(smoothing.smooth(arg_v2, smooth_))
-                    arg_v4 = np.resize(arg_v3, L)
-                    res = arg_v4.tolist()
+                    res = np.resize(arg_v3, L)
                 except:
                     res = np.array(smoothing.smooth(theta, smooth_))
 
@@ -145,14 +146,12 @@ def theta_loop(
         temp,
         theta,
 ):
+
     L = len(time)
     final_theta = np.zeros(L)
-    val = L*0.01
-    for i in range(int(val)):
+    for i in range(int(L)):
         final_theta[i] = theta_ap_0(wind_radius[i], psp_radius[i], density_p[i],
                                     density_ap[i], speed[i], temp[i], theta[i])
-        print(wind_radius[i], psp_radius[i], density_p[i], density_ap[i],speed[i],temp[i], theta[i])
-        print(final_theta[i])
         print('\r', f"{(i / L) * 100:.2f} %", end="")
 
     return final_theta
