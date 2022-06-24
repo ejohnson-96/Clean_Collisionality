@@ -1,9 +1,15 @@
 import numpy as np
 
+
 def smooth(
         data,
         box_pts=1,
 ):
+    if not isinstance(data, np.ndarray):
+        raise TypeError(
+            "Error: Argument 'data' must be a numpy array, "
+            f"instead got type of {type(data)}."
+        )
 
     if not isinstance(box_pts, int):
         raise TypeError(
@@ -11,7 +17,8 @@ def smooth(
             f"instead got {box_pts} of type {type(box_pts)}."
         )
 
-    box = np.ones(box_pts)/box_pts
-    data_smooth = np.convolve(data, box, mode='same')
-
-    return data_smooth
+    if box_pts == 0:
+        return data
+    else:
+        box = np.ones(box_pts) / abs(box_pts)
+        return np.convolve(data, box, mode='same')
