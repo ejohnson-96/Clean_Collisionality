@@ -120,7 +120,7 @@ def graph(
     else:
         style_line = validate_styles(style_line)
     if isinstance(y_data, (list, np.ndarray)):
-        plt.plot(x_data, y_data, label=cm.capital_first_letter(label), color='black',
+        plt.plot(x_data, y_data, label=cm.capital_all_letter(label), color='black',
                  linewidth=line_width, linestyle=style_line)
     elif isinstance(y_data, dict):
         y_labels = []
@@ -133,7 +133,7 @@ def graph(
                 b = random.random()
                 if isinstance(style_line, str):
                     plt.plot(x_data, y_data[y_labels[i]],
-                             label=cm.capital_first_letter(y_labels[i]), color=(r, g, b),
+                             label=cm.capital_all_letter(y_labels[i]), color=(r, g, b),
                              linewidth=line_width, linestyle=style_line)
                 else:
 
@@ -165,12 +165,12 @@ def graph(
                     colour = colours[i]
                     if isinstance(style_line, str):
                         plt.plot(x_data, y_data[y_labels[i]],
-                                 label=cm.capital_first_letter(y_labels[i]), color=colour,
+                                 label=cm.capital_all_letter(y_labels[i]), color=colour,
                                  linewidth=line_width, linestyle=style_line)
 
                     else:
                         plt.plot(x_data, y_data[y_labels[i]],
-                                 label=cm.capital_first_letter(y_labels[i]), color=colour,
+                                 label=cm.capital_all_letter(y_labels[i]), color=colour,
                                  linewidth=line_width, linestyle=style_line[i])
 
     else:
