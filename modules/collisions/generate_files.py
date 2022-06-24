@@ -1,3 +1,5 @@
+import numpy as np
+
 from modules.core.time import tictoc as stopwatch, convert as converter
 from modules.core.constants import initialise_constants
 
@@ -22,13 +24,20 @@ valid_enc = [4, 6, 7]
 
 def encounter_generator(
         wind_rad=1,
+        error_file=False
 ):
+    stopwatch.start_time()
+
     if not isinstance(wind_rad, (int, float)):
         raise TypeError(
             "Error: Wind radius must be either a float or integer, "
             f"instead got type of {type(wind_rad)}"
         )
-    stopwatch.start_time()
+
+    if not isinstance(error_file, bool):
+        raise TypeError(
+            "Error:"
+        )
 
     print('Currently loaded encounters:', valid_enc, '\n')
 
@@ -62,7 +71,7 @@ def encounter_generator(
 
     # Generate directory strings for encounters
     encounter_number = encount
-    enc(encount, valid_enc, False)
+    enc(encount, valid_enc, error_file)
     print('\n')
     error_files = enc.error_files_loaded
     mm_data = rw.encounter_import(encount, valid_enc, error_files)
@@ -256,16 +265,51 @@ def encounter_generator(
         solar_data[t].append(converter.epoch_time(solar_data[p][t][i]))
     theta_ap_0 = psp_scalar_temps['theta_ap']
     wind_radius = wind_rad
-    theta_ap_final = theta_ap.make_theta_vals(solar_data, spc_data, psp_scalar_temps,
-                                              wind_radius)
+    theta_ap_final = np.zeros(100) #theta_ap.make_theta_vals(solar_data, spc_data, psp_scalar_temps,
+                                             # wind_radius)
     print('Note: Files have been generated and loaded in.', '\n')
 
-    # uncertain = error.sigma_value(solar_data, errors, psp_scalar_temps)
+    uncertain = error.sigma_value(solar_data, errors, psp_scalar_temps)
 
     theta = {'0.1 - 0.2': theta_ap_0, '1.0': theta_ap_final}
     np.savetxt('theta_i.txt', theta['0.1 - 0.2'])
     np.savetxt('theta_f.txt', theta['1.0'])
     np.savetxt('wind_theta.txt', wind_scalar_temps['wind_theta'])
+
+    x = np.linspace(0,15,1000)
+    y = uncertain[p]['Density']
+    z = uncertain[a]['Density']
+    print(y, len(uncertain[p]['Scalar Temp']))
+    print(z)
+
+    import math
+    from scipy.optimize import curve_fit
+    def maxwellian(x, r, m, s):
+        return (r / (s * np.sqrt(math.pi))) * np.exp(- (x - m) ** 2 / (2 * (s ** 2)))
+
+    y = y[np.logical_not(np.isnan(y))]
+    z = z[np.logical_not(np.isnan(z))]
+    bn_i =20
+    bn_a = 5
+    data_entries, bins = np.histogram(y, bins=bn_i, density=True)
+    data_alpha, bins_alpha = np.histogram(z, bins=bn_a, density=True)
+    binscenters = np.array([0.5 * (bins[i] + bins[i + 1]) for i in range(len(bins) - 1)])
+    binalphacenters = np.array([0.5 * (bins_alpha[i] + bins_alpha[i + 1]) for i in range(len(bins_alpha) - 1)])
+    from modules.core.features import smooth as smoothing
+    popt, pcov = curve_fit(maxwellian, xdata=binscenters, ydata=data_entries, maxfev=10000)
+    popta, pcova = curve_fit(maxwellian, xdata=binalphacenters, ydata=data_alpha, maxfev=10000)
+    xspace = np.linspace(0, 20, 10000)
+    yspace = maxwellian(xspace, *popt)
+    x = np.linspace(0,20,10000)
+    zspace = maxwellian(x, *popta)
+
+    data = {'Proton':yspace, 'Alpha':zspace}
+    print(zspace)
+    color = ['black','blue']
+    graph.histogram(xspace, y)
+    graph.histogram(xspace, z,)
+    graph.graph(xspace, data, colours=color, title='', x_axis=r'$\frac{\sigma_{|v|}}{|v|}$', y_axis='Probability Density', limits=False, x_lim=25, y_lim=5)
+
 
     intervals_per_day = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 20, 23, 48,
                          96, 192]

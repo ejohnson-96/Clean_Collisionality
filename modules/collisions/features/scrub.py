@@ -2,7 +2,7 @@ from modules.collisions.constants import *
 from modules.collisions.features import lat_lon
 
 const()
-
+error_files = enc.error_files_loaded
 
 def clean(
         array,
@@ -39,43 +39,47 @@ def scrub_data(
         error_data,
         spc_data,
 ):
-    l = -1
-    k = -1
-    for x in solar_data.keys():
-        l = l + 1
-        for y in solar_data[x].keys():
-            k = k + 1
-            val = const.data_units[l][k]
-            solar_data[x][y] = clean(solar_data[x][y], const.var_min[val],
-                                     const.var_max[val])
-        print(f"{(l / len(solar_data)) * 100:.2f} %", end="\r")
+    for encounter in solar_data.keys():
+        l = -1
         k = -1
-    m = -1
-    n = -1
-
-    l = -1
-    k = -1
-    for x in error_data.keys():
-        l = l + 1
-        for y in error_data[x].keys():
-            k = k + 1
-            val = const.error_units[l][k]
-            error_data[x][y] = clean(error_data[x][y], const.var_min[val],
-                                     const.var_max[val])
-        print(f"{(l / len(error_data)) * 100:.2f} %", end="\r")
-        k = -1
-    m = -1
-    n = -1
-
-    for x in spc_data.keys():
-        m = m + 1
-        for y in spc_data[x].keys():
-            n = n + 1
-            val = const.sc_units[l][k]
-            spc_data[x][y] = clean(spc_data[x][y], const.var_min[val], const.var_max[val])
-        print(f"{(m / len(spc_data)) * 100:.2f} %", end="\r")
-        n = -1
+        for x in solar_data[encounter].keys():
+            l = l + 1
+            for y in solar_data[encounter][x].keys():
+                k = k + 1
+                val = const.data_units[l][k]
+                solar_data[x][y] = clean(solar_data[encounter][x][y], const.var_min[val],
+                                         const.var_max[val])
+            print(f"{(l / len(solar_data)) * 100:.2f} %", end="\r")
+            k = -1
         m = -1
+        n = -1
+
+    if error_files:
+        for encounter in error_data.keys():
+            l = -1
+            k = -1
+            for x in error_data[encounter].keys():
+                l = l + 1
+                for y in error_data[encounter][x].keys():
+                    k = k + 1
+                    val = const.error_units[l][k]
+                    error_data[x][y] = clean(error_data[encounter][x][y], const.var_min[val],
+                                             const.var_max[val])
+                print(f"{(l / len(error_data)) * 100:.2f} %", end="\r")
+                k = -1
+            m = -1
+            n = -1
+
+    for encounter in spc_data.keys():
+        for x in spc_data[encounter].keys():
+            m = m + 1
+            for y in spc_data[encounter][x].keys():
+                n = n + 1
+                val = const.sc_units[l][k]
+                spc_data[x][y] = clean(spc_data[encounter][x][y], const.var_min[val], const.var_max[val])
+            print(f"{(m / len(spc_data)) * 100:.2f} %", end="\r")
+            n = -1
+            m = -1
 
     print('Data Scrub Complete', '\n')
 

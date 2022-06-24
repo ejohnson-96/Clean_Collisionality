@@ -90,18 +90,21 @@ def sigma_value(
     alpha_temp = scalar_temps['alpha_scalar_temp']
     proton_temp_perp = solar_data[p]['Tperp1']
     alpha_temp_perp = solar_data[a]['Ta_perp']
-    p_s_e_x = error_data[p]['dV1x']
-    p_s_e_y = error_data[p]['dV1y']
-    p_s_e_z = error_data[p]['dV1z']
-    a_s_e_x = error_data[a]['dVx']
-    a_s_e_y = error_data[a]['dVy']
-    a_s_e_z = error_data[a]['dVz']
+
     proton_speed = solar_data[p]['v_mag']
     alpha_speed = solar_data[a]['v_mag']
     proton_density = solar_data[p]['np1']
     alpha_density = solar_data[a]['na']
     proton_isotropy = scalar_temps['proton_R']
     alpha_isotropy = scalar_temps['alpha_R']
+
+    p_s_e_x = error_data[p]['dV1x']
+    p_s_e_y = error_data[p]['dV1y']
+    p_s_e_z = error_data[p]['dV1z']
+    a_s_e_x = error_data[a]['dVx']
+    a_s_e_y = error_data[a]['dVy']
+    a_s_e_z = error_data[a]['dVz']
+
     proton_error_tperp = error_data[p]['dT1_perp']
     alpha_error_tperp = error_data[a]['dT_perp']
     proton_error_density = error_data[p]['dn1']
@@ -137,28 +140,28 @@ def sigma_value(
         alpha_error_tpar[i] = alpha_error_isotropy[i] * alpha_error_tperp[i]
 
         proton_temp_error[i] = np.sqrt((2*proton_error_tperp[i])**2+(proton_error_tpar[i]**2))/3
-        alpha_temp_error[i] = np.sqrt((alpha_error_tperp[i])**2+(alpha_error_tpar[i])**2)/3
+        alpha_temp_error[i] = np.sqrt((2*alpha_error_tperp[i])**2+(alpha_error_tpar[i])**2)/3
 
         if proton_temp[i] == 0:
             proton_temp[i] = fill_value
-        proton_error_over_temp[i] = proton_temp_error[i]/proton_temp[i]
+        proton_error_over_temp[i] = (proton_temp_error[i]/proton_temp[i])*10**6
         if alpha_temp[i] == 0:
             alpha_temp[i] = fill_value
-        alpha_error_over_temp[i] = alpha_temp_error[i]/alpha_temp[i]
+        alpha_error_over_temp[i] = (alpha_temp_error[i]/alpha_temp[i])*10**6
 
         if proton_temp_perp[i] == 0:
             proton_temp_perp[i] = fill_value
-        proton_error_over_temp_perp[i] = proton_error_tperp[i]/proton_temp_perp[i]
+        proton_error_over_temp_perp[i] = (proton_error_tperp[i]*10**2/proton_temp_perp[i])
         if alpha_temp_perp[i] == 0:
             alpha_temp_perp[i] = fill_value
-        alpha_error_over_temp_perp[i] = alpha_error_tperp[i]/alpha_temp_perp[i]
+        alpha_error_over_temp_perp[i] = (alpha_error_tperp[i]*10**2/alpha_temp_perp[i])
 
         if proton_density[i] == 0:
             proton_density[i] = fill_value
-        proton_error_over_dense[i] = proton_error_density[i]/proton_density[i]
+        proton_error_over_dense[i] = proton_error_density[i]*100/proton_density[i]
         if alpha_density[i] == 0:
             alpha_density[i] = fill_value
-        alpha_error_over_dens[i] = alpha_error_density[i]/alpha_density[i]
+        alpha_error_over_dens[i] = alpha_error_density[i]*100/alpha_density[i]
 
         if proton_isotropy[i] == 0:
             proton_isotropy = fill_value
@@ -170,8 +173,8 @@ def sigma_value(
         proton_error_speed[i] = np.sqrt(p_s_e_x[i]**2+p_s_e_y[i]**2+p_s_e_z[i]**2)
         alpha_error_speed[i] = np.sqrt(a_s_e_z[i]**2 + a_s_e_y[i]**2 + a_s_e_x[i]**2)
 
-        proton_error_over_speed[i] = proton_error_speed[i]/proton_speed[i]
-        alpha_error_over_speed[i] = alpha_error_speed[i]/alpha_speed[i]
+        proton_error_over_speed[i] = proton_error_speed[i]*1000/proton_speed[i]
+        alpha_error_over_speed[i] = alpha_error_speed[i]*1000/alpha_speed[i]
 
     res = {}
     res[p] = {'Scalar Temp': proton_error_over_temp, 'Density': proton_error_over_dense, 'Speed': proton_error_over_speed, 'Isotropy': proton_error_over_isotropy, 'TPerp':proton_error_over_temp_perp}

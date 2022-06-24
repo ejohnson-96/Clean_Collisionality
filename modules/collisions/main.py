@@ -8,7 +8,7 @@ from modules.core.features import graph as graph
 import generate_files as gen_files
 
 val = 1
-#gen_files.encounter_generator(val)
+gen_files.encounter_generator(val, True)
 
 theta_i = np.loadtxt('theta_i.txt')
 theta_f = np.loadtxt('theta_f.txt')
@@ -17,7 +17,7 @@ theta_w = np.loadtxt('wind_theta.txt')
 label_i = '0.1 - 0.2 AU'
 label_f = str(val) + ' AU'
 
-X = np.linspace(0, 15, 1000)
+X = np.linspace(0, 2, 1000)
 
 def maxwellian(x, r, m,s):
     return (r / (s * np.sqrt(math.pi))) * np.exp(- (x - m) ** 2 / (2 * (s ** 2)))
