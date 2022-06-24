@@ -19,19 +19,19 @@ def maxwellian(x, r, m,s):
     return (r / (s * np.sqrt(math.pi))) * np.exp(- (x - m) ** 2 / (2 * (s ** 2)))
 
 
-def fit_function(x, r, m, s, q, n, t, ):
+def fit_function(x, r, m, s, n, t, ):
     return maxwellian(x, r, m,s) - maxwellian(x,r,n,t)
 
 def second_fit_function(x, r, m, s, q, n, t, ):
-    return maxwellian(x, r, m,s) - maxwellian(x,q,n,t)
+    return maxwellian(x, r, m,s) + maxwellian(x,r,n,t)
 
 val = 0.1 #0.000001
 val2 = 0.8 #0.000001
 val3 = 0.1
 
 bn_i = int((max(theta_i) - min(theta_i))/val)
-bn_f = 20 #int((max(theta_f)-min(theta_f))/val2)
-bn_w = 41 #int((max(theta_w)-min(theta_w))/val3)
+bn_f = 25 #int((max(theta_f)-min(theta_f))/val2)
+bn_w = 42 #int((max(theta_w)-min(theta_w))/val3)
 
 print(bn_i, bn_f, bn_w)
 print(len(theta_i))
@@ -44,10 +44,10 @@ for i in range(len(theta_i)):
 
 theta_i = theta_i[np.logical_not(np.isnan(theta_i))]
 theta_f = theta_f[np.logical_not(np.isnan(theta_f))]
-theta_w = smoothing.smooth(theta_w[np.logical_not(np.isnan(theta_w))],10)
+theta_w = smoothing.smooth(theta_w[np.logical_not(np.isnan(theta_w))],1)
 
 data_entries_i, bins_i = np.histogram(theta_i, bins=bn_i, density=True)
-data_entries_f, bins_f = np.histogram(theta_f, bins=bn_f, density=True)
+data_entries_f, bins_f = np.histogram(theta_f, bins=bn_f, density=True, )
 data_entries_w, bins_w = np.histogram(theta_w, bins=bn_w, density=True)
 
 binscenters_i = np.array([0.5 * (bins_i[i] + bins_i[i + 1]) for i in range(len(bins_i) - 1)])
@@ -56,23 +56,23 @@ binscenters_w = np.array([0.5 * (bins_w[i] + bins_w[i + 1]) for i in range(len(b
 
 pop_i, pcov_i = curve_fit(maxwellian, xdata=binscenters_i, ydata=data_entries_i, )
 popt_f, pcov_f = curve_fit(fit_function, xdata=binscenters_f, ydata=data_entries_f,maxfev=80000)
-pop_w, pcov_w = curve_fit(second_fit_function, xdata=binscenters_w, ydata=data_entries_w, maxfev=180000)
+pop_w, pcov_w = curve_fit(second_fit_function, xdata=binscenters_w, ydata=data_entries_w, maxfev=180000, p0=[0.1,1,0.1,0.1,4,0.1])
 
 xspace = np.linspace(0, 15, 1000)
 yspace = fit_function(xspace, *popt_f)
 zspace = maxwellian(xspace, *pop_i)
 wspace = second_fit_function(xspace, *pop_w)
 
-y = {label_i:zspace, label_f:yspace, '':wspace}
+y = {label_i:zspace, label_f:yspace,}# '':wspace}
 
 
 y_label = 'Probability Density'
 x_label = r'$\alpha$-Proton Relative Temperature'
 
-color = ['blue','black','red']
-style = ['-','--','--']
+color = ['blue','black']#,'red']
+style = ['-','--',]#'--']
 
-#graph.graph(binscenters_f, data_entries_f)
-graph.graph(binscenters_w, data_entries_w)
+graph.graph(binscenters_f, data_entries_f)
+#graph.graph(binscenters_w, data_entries_w)
 
-graph.graph(xspace, y, colours=color, style_line=style, title='', x_axis=x_label, y_axis=y_label, limits=True, x_lim=15, y_lim=1 )
+graph.graph(xspace, y, colours=color, style_line=style, title='', x_axis=x_label, y_axis=y_label, limits=True, x_lim=15, y_lim=0.5 )
