@@ -21,12 +21,12 @@ valid_enc = [4, 6, 7]
 
 
 def encounter_generator(
-        wind_radius=1,
+        wind_rad=1,
 ):
-    if not isinstance(wind_radius, (int, float)):
+    if not isinstance(wind_rad, (int, float)):
         raise TypeError(
             "Error: Wind radius must be either a float or integer, "
-            f"instead got type of {type(wind_radius)}"
+            f"instead got type of {type(wind_rad)}"
         )
     stopwatch.start_time()
 
@@ -255,7 +255,7 @@ def encounter_generator(
     for i in range(len(solar_data[p][t])):
         solar_data[t].append(converter.epoch_time(solar_data[p][t][i]))
     theta_ap_0 = psp_scalar_temps['theta_ap']
-    wind_radius = 1
+    wind_radius = wind_rad
     theta_ap_final = theta_ap.make_theta_vals(solar_data, spc_data, psp_scalar_temps,
                                               wind_radius)
     print('Note: Files have been generated and loaded in.', '\n')
