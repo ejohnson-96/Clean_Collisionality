@@ -165,10 +165,10 @@ def sigma_value(
 
         if proton_isotropy[i] == 0:
             proton_isotropy = fill_value
-        proton_error_over_isotropy[i] = proton_error_isotropy[i]/proton_isotropy[i]
+        proton_error_over_isotropy[i] = proton_error_isotropy[i]*1000/proton_isotropy[i]
         if alpha_isotropy[i] == 0:
             alpha_isotropy[i] = fill_value
-        alpha_error_over_isotropy[i] = alpha_error_isotropy[i]/alpha_isotropy[i]
+        alpha_error_over_isotropy[i] = alpha_error_isotropy[i]*1000/alpha_isotropy[i]
 
         proton_error_speed[i] = np.sqrt(p_s_e_x[i]**2+p_s_e_y[i]**2+p_s_e_z[i]**2)
         alpha_error_speed[i] = np.sqrt(a_s_e_z[i]**2 + a_s_e_y[i]**2 + a_s_e_x[i]**2)

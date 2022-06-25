@@ -277,8 +277,8 @@ def encounter_generator(
     np.savetxt('wind_theta.txt', wind_scalar_temps['wind_theta'])
 
     x = np.linspace(0,15,1000)
-    y = uncertain[p]['Density']
-    z = uncertain[a]['Density']
+    y = uncertain[p]['Isotropy']
+    z = uncertain[a]['Isotropy']
     print(y, len(uncertain[p]['Scalar Temp']))
     print(z)
 
@@ -289,7 +289,7 @@ def encounter_generator(
 
     y = y[np.logical_not(np.isnan(y))]
     z = z[np.logical_not(np.isnan(z))]
-    bn_i =20
+    bn_i =10
     bn_a = 5
     data_entries, bins = np.histogram(y, bins=bn_i, density=True)
     data_alpha, bins_alpha = np.histogram(z, bins=bn_a, density=True)
