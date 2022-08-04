@@ -35,7 +35,7 @@ def remove_theta(
         smooth_=core_const.smooth,
 ):
     print(type(theta))
-    print('cunt')
+
     L = len(theta)
     if value is None:
         return theta

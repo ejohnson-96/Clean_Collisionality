@@ -7,8 +7,9 @@ from scipy.optimize import curve_fit
 from modules.core.features import graph as graph
 import generate_files as gen_files
 
-val = 0.4
-gen_files.encounter_generator(val, True)
+vals = [0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0,2.0]
+for val in vals:
+    gen_files.encounter_generator(val, False)
 
 theta_i = np.loadtxt('theta_i.txt')
 theta_f = np.loadtxt('theta_f.txt')

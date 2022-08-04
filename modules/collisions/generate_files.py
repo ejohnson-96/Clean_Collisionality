@@ -1,3 +1,4 @@
+import os
 import warnings
 
 from constants import *
@@ -24,19 +25,22 @@ a = 'alpha'
 particle_list = [p, a]
 valid_enc = [4, 6, 7]
 
+
 def load_generate(
         encounter,
         radius,
 
 ):
     parent_path = sm.slash_check(fdir.dir_parent())
-    print(fdir.dir_name())
-    l = len(fdir.dir_name()) + 1
+    parent_path = cm.remove_end(parent_path)
+    name = fdir.dir_name(parent_path)
+
+    l = len(name) + 1
 
     for i in range(l):
         parent_path = cm.remove_end(parent_path)
-        print(parent_path)
-    path = sm.jwos(parent_path, 'data', slash, 'save', slash)
+
+    path = sm.jwos(parent_path, slash, 'data', slash, 'save', slash)
 
     if encounter == 0:
         enc = 'EA'
@@ -44,13 +48,33 @@ def load_generate(
         enc = sm.jwos('E', str(encounter))
 
     fdir.dir_make(enc, path)
-    print(path)
+
     path = sm.jwos(path, enc, slash)
-    fdir.dir_make(str(radius), path)
+    radius_dir = fdir.dir_make(str(radius), path)
 
-    direct = sm.jwos(path, str(radius), slash)
+    if not radius_dir:
+        h = 1
+        while h > 0:
+            user_overide = input("Indication that these files already exist, "
+                                 "would you like to overide them? (y/n)")
+            if not isinstance(user_overide, str):
+                raise TypeError(
+                    "Error: User input is invalid."
+                )
+            else:
+                var = cm.lower_all_letter(user_overide)
+                if var == 'y':
+                    h = 0
+                elif var == 'n':
+                    exit()
+                else:
+                    raise ValueError(
+                        "Error: Only a Yes, No answer in the form of "
+                        "y/n is required."
+                    )
 
-    return direct
+    return sm.jwos(path, str(radius), slash)
+
 
 def encounter_generator(
         wind_rad=1,
@@ -76,7 +100,7 @@ def encounter_generator(
 
     h = 1
     while h > 0:
-        data_set_input = input('Full data set or singular? (F/S)')
+        data_set_input = 'F' #input('Full data set or singular? (F/S)')
         if data_set_input in valid_full:
             encount = 0
             h = 0
@@ -296,28 +320,34 @@ def encounter_generator(
         solar_data[t].append(converter.epoch_time(solar_data[p][t][i]))
     theta_ap_0 = psp_scalar_temps['theta_ap']
     wind_radius = wind_rad
-    theta_ap_final = np.zeros(100) #theta_ap.make_theta_vals(solar_data, spc_data, psp_scalar_temps,
-                                             # wind_radius)
+    theta_ap_final = theta_ap.make_theta_vals(solar_data, spc_data, psp_scalar_temps,
+                                              wind_radius)
     print('Note: Files have been generated and loaded in.', '\n')
 
-    uncertain = error.sigma_value(solar_data, errors, psp_scalar_temps)
+    if error_files:
+        uncertain = error.sigma_value(solar_data, errors, psp_scalar_temps)
 
     theta = {'0.1 - 0.2': theta_ap_0, str(wind_rad): theta_ap_final}
 
-    save_loc
-    file_names = ['theta_i.txt','theta_f.txt','wind_theta.txt']
-    temp_files = [theta['0.1 - 0.2'],theta[str(wind_rad)],wind_scalar_temps['wind_theta']]
+    print(save_loc)
+    file_names = ['theta_i.txt', 'theta_f.txt', 'wind_theta.txt']
+    temp_files = [theta['0.1 - 0.2'], theta[str(wind_rad)],
+                  wind_scalar_temps['wind_theta']]
 
     if len(file_names) != len(temp_files):
         warnings.warn("Warning: File save system has unequal lengths.")
     else:
         for i in range(len(file_names)):
-            np.savetxt(file_names[i],temp_files[i])
+            loc = sm.jwos(save_loc, file_names[i])
+            np.savetxt(loc, temp_files[i])
 
     return
 
 
-    x = np.linspace(0,15,1000)
+def uncertain(
+
+):
+    x = np.linspace(0, 15, 1000)
     y = uncertain[p]['Isotropy']
     z = uncertain[a]['Isotropy']
     print(y, len(uncertain[p]['Scalar Temp']))
@@ -330,27 +360,31 @@ def encounter_generator(
 
     y = y[np.logical_not(np.isnan(y))]
     z = z[np.logical_not(np.isnan(z))]
-    bn_i =10
+    bn_i = 10
     bn_a = 5
     data_entries, bins = np.histogram(y, bins=bn_i, density=True)
     data_alpha, bins_alpha = np.histogram(z, bins=bn_a, density=True)
     binscenters = np.array([0.5 * (bins[i] + bins[i + 1]) for i in range(len(bins) - 1)])
-    binalphacenters = np.array([0.5 * (bins_alpha[i] + bins_alpha[i + 1]) for i in range(len(bins_alpha) - 1)])
+    binalphacenters = np.array(
+        [0.5 * (bins_alpha[i] + bins_alpha[i + 1]) for i in range(len(bins_alpha) - 1)])
     from modules.core.features import smooth as smoothing
-    popt, pcov = curve_fit(maxwellian, xdata=binscenters, ydata=data_entries, maxfev=10000)
-    popta, pcova = curve_fit(maxwellian, xdata=binalphacenters, ydata=data_alpha, maxfev=10000)
+    popt, pcov = curve_fit(maxwellian, xdata=binscenters, ydata=data_entries,
+                           maxfev=10000)
+    popta, pcova = curve_fit(maxwellian, xdata=binalphacenters, ydata=data_alpha,
+                             maxfev=10000)
     xspace = np.linspace(0, 20, 10000)
     yspace = maxwellian(xspace, *popt)
-    x = np.linspace(0,20,10000)
+    x = np.linspace(0, 20, 10000)
     zspace = maxwellian(x, *popta)
 
-    data = {'Proton':yspace, 'Alpha':zspace}
+    data = {'Proton': yspace, 'Alpha': zspace}
     print(zspace)
-    color = ['black','blue']
+    color = ['black', 'blue']
     graph.histogram(xspace, y)
-    graph.histogram(xspace, z,)
-    graph.graph(xspace, data, colours=color, title='', x_axis=r'$\frac{\sigma_{|v|}}{|v|}$', y_axis='Probability Density', limits=False, x_lim=25, y_lim=5)
-
+    graph.histogram(xspace, z, )
+    graph.graph(xspace, data, colours=color, title='',
+                x_axis=r'$\frac{\sigma_{|v|}}{|v|}$', y_axis='Probability Density',
+                limits=False, x_lim=25, y_lim=5)
 
     intervals_per_day = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 20, 23, 48,
                          96, 192]
