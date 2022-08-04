@@ -1,5 +1,6 @@
 import os
 import pathlib
+import warnings
 from modules.core.variables import string_man as sm
 from modules.core.system import config as sys_con
 
@@ -33,12 +34,16 @@ def dir_make(
             f"Directory name passed is not a string, "
             f"instead got {type(name)}"
         )
-
+    print(loc)
     path = sm.slash_check(loc) + name
+    isExist = os.path.exists(path)
 
-    os.mkdir(path)
-
-    return
+    if isExist:
+        warnings.warn("Warning: Directory already exits.")
+        return
+    else:
+        os.mkdir(path)
+        return
 
 
 def file_list(
