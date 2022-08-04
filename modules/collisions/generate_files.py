@@ -1,18 +1,19 @@
-import numpy as np
+from constants import *
 
 from modules.core.time import tictoc as stopwatch, convert as converter
 from modules.core.constants import initialise_constants
-
-from constants import *
 from modules.core.validate import input as inpt
+from modules.core.variables import num_man as nm, string_man as sm
+from modules.core.features import graph as graph
+from modules.core.loadsave import file_dir as dir
+
 from modules.collisions.loadsave import loadsave as rw
 from modules.collisions.features import lat_lon as lat_lon, \
     scalar_generate as sc_gen
-from modules.core.variables import num_man as nm
-from modules.core.features import graph as graph
 from modules.collisions.model import theta_ap as theta_ap, errors as error
 
 initialise_constants()
+slash = dir.slash()
 
 t = 'time'
 p = 'proton'
@@ -21,6 +22,17 @@ a = 'alpha'
 particle_list = [p, a]
 valid_enc = [4, 6, 7]
 
+def load_generate(
+        encounter,
+
+
+):
+    location = sm.slash_check(dir.dir_path())
+    path = 'data/load/'
+    dir = sm.jwos(location, path)
+
+
+    return
 
 def encounter_generator(
         wind_rad=1,
@@ -271,10 +283,14 @@ def encounter_generator(
 
     uncertain = error.sigma_value(solar_data, errors, psp_scalar_temps)
 
-    theta = {'0.1 - 0.2': theta_ap_0, '1.0': theta_ap_final}
+    theta = {'0.1 - 0.2': theta_ap_0, str(wind_rad): theta_ap_final}
+
     np.savetxt('theta_i.txt', theta['0.1 - 0.2'])
-    np.savetxt('theta_f.txt', theta['1.0'])
+    np.savetxt('theta_f.txt', theta[str(wind_rad)])
     np.savetxt('wind_theta.txt', wind_scalar_temps['wind_theta'])
+
+    return
+
 
     x = np.linspace(0,15,1000)
     y = uncertain[p]['Isotropy']

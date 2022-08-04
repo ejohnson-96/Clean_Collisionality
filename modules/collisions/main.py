@@ -7,7 +7,7 @@ from scipy.optimize import curve_fit
 from modules.core.features import graph as graph
 import generate_files as gen_files
 
-val = 1
+val = 0.4
 gen_files.encounter_generator(val, True)
 
 theta_i = np.loadtxt('theta_i.txt')
@@ -34,7 +34,7 @@ val2 = 0.1 #0.000001
 val3 = 0.1
 
 bn_i = int((max(theta_i) - min(theta_i))/val)
-bn_f = 200 #int((max(theta_f)-min(theta_f))/val2)
+bn_f = 32 #int((max(theta_f)-min(theta_f))/val2)
 bn_w = 75 #int((max(theta_w)-min(theta_w))/val3)
 
 print(bn_i, bn_f, bn_w)
@@ -47,7 +47,7 @@ for i in range(len(theta_i)):
         print(theta_i[i])
 
 theta_i = theta_i[np.logical_not(np.isnan(theta_i))]
-theta_f = smoothing.smooth(theta_f[np.logical_not(np.isnan(theta_f))],2)
+theta_f = smoothing.smooth(theta_f[np.logical_not(np.isnan(theta_f))],1)
 theta_w = theta_w[np.logical_not(np.isnan(theta_w))]
 
 data_entries_i, bins_i = np.histogram(theta_i, bins=bn_i, density=True)
