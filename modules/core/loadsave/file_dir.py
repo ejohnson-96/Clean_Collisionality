@@ -48,7 +48,7 @@ def dir_make(
 def dir_name(
     loc=None,
 ):
-    if isinstance(loc, None):
+    if isinstance(loc, type(None)):
         dir_path = os.getcwd()
         return os.path.basename(dir_path)
     else:
