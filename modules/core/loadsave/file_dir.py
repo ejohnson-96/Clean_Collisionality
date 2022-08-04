@@ -4,7 +4,7 @@ from modules.core.variables import string_man as sm
 from modules.core.system import config as sys_con
 
 
-def dir_path(
+def dir_parent(
 
 ):
     directory = os.getcwd()
@@ -13,7 +13,15 @@ def dir_path(
     return path
 
 
-parent_path = dir_path()
+parent_path = dir_parent()
+
+def dir_path(
+
+):
+    directory = os.getcwd()
+    path = str(pathlib.Path(directory))
+
+    return path
 
 
 def dir_make(
