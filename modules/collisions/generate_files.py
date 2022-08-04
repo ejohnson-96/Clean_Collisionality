@@ -30,8 +30,13 @@ def load_generate(
 
 ):
     parent_path = sm.slash_check(fdir.dir_parent())
+    print(fdir.dir_name())
+    l = len(fdir.dir_name()) + 1
 
-    path = sm.jwos(, 'data', slash, 'save', slash)
+    for i in range(l):
+        parent_path = cm.remove_end(parent_path)
+        print(parent_path)
+    path = sm.jwos(parent_path, 'data', slash, 'save', slash)
 
     if encounter == 0:
         enc = 'EA'
