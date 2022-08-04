@@ -38,12 +38,12 @@ def dir_make(
     path = sm.slash_check(loc) + name
     isExist = os.path.exists(path)
 
-    if not isExist:
+    if isExist:
         warnings.warn("Warning: Directory already exits.")
-        return False
+        return
     else:
         os.mkdir(path)
-        return True
+        return
 
 
 def file_list(
