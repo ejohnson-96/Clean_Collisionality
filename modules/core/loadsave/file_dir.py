@@ -34,7 +34,7 @@ def dir_make(
             f"Directory name passed is not a string, "
             f"instead got {type(name)}"
         )
-    print(loc)
+
     path = sm.slash_check(loc) + name
     isExist = os.path.exists(path)
 
