@@ -10,7 +10,7 @@ def enc(
         valid_enc,
         error_files=False,
 ):
-    path = fd.dir_path()
+    path = fd.dir_parent()
     for i in range(7):
         path = cm.remove_end(path)
     enc.path = path

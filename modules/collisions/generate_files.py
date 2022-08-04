@@ -1,3 +1,5 @@
+import warnings
+
 from constants import *
 
 from modules.core.time import tictoc as stopwatch, convert as converter
@@ -5,7 +7,7 @@ from modules.core.constants import initialise_constants
 from modules.core.validate import input as inpt
 from modules.core.variables import num_man as nm, string_man as sm
 from modules.core.features import graph as graph
-from modules.core.loadsave import file_dir as dir
+from modules.core.loadsave import file_dir as fdir
 
 from modules.collisions.loadsave import loadsave as rw
 from modules.collisions.features import lat_lon as lat_lon, \
@@ -13,7 +15,7 @@ from modules.collisions.features import lat_lon as lat_lon, \
 from modules.collisions.model import theta_ap as theta_ap, errors as error
 
 initialise_constants()
-slash = dir.slash()
+slash = fdir.slash()
 
 t = 'time'
 p = 'proton'
@@ -24,15 +26,26 @@ valid_enc = [4, 6, 7]
 
 def load_generate(
         encounter,
-
+        radius,
 
 ):
-    location = sm.slash_check(dir.dir_path())
-    path = 'data/load/'
-    dir = sm.jwos(location, path)
+    parent_path = sm.slash_check(fdir.dir_parent())
 
+    path = sm.jwos(, 'data', slash, 'save', slash)
 
-    return
+    if encounter == 0:
+        enc = 'EA'
+    else:
+        enc = sm.jwos('E', str(encounter))
+
+    fdir.dir_make(enc, path)
+    print(path)
+    path = sm.jwos(path, enc, slash)
+    fdir.dir_make(str(radius), path)
+
+    direct = sm.jwos(path, str(radius), slash)
+
+    return direct
 
 def encounter_generator(
         wind_rad=1,
@@ -90,6 +103,7 @@ def encounter_generator(
     if error_files:
         error_data = rw.error_import()
     sc_data = rw.sc_import()
+    save_loc = load_generate(encount, wind_rad)
     print('\nData import sucessful.\n')
 
     # Generate equal sized arays for all data
@@ -285,9 +299,15 @@ def encounter_generator(
 
     theta = {'0.1 - 0.2': theta_ap_0, str(wind_rad): theta_ap_final}
 
-    np.savetxt('theta_i.txt', theta['0.1 - 0.2'])
-    np.savetxt('theta_f.txt', theta[str(wind_rad)])
-    np.savetxt('wind_theta.txt', wind_scalar_temps['wind_theta'])
+    save_loc
+    file_names = ['theta_i.txt','theta_f.txt','wind_theta.txt']
+    temp_files = [theta['0.1 - 0.2'],theta[str(wind_rad)],wind_scalar_temps['wind_theta']]
+
+    if len(file_names) != len(temp_files):
+        warnings.warn("Warning: File save system has unequal lengths.")
+    else:
+        for i in range(len(file_names)):
+            np.savetxt(file_names[i],temp_files[i])
 
     return
 
