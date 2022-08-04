@@ -45,15 +45,6 @@ def dir_make(
         os.mkdir(path)
         return
 
-def dir_name(
-
-):
-    dir_path = os.getcwd()
-    dir_name = os.path.basename(dir_path)
-
-    return dir_name
-
-
 def file_list(
         loc=parent_path,
 ):
