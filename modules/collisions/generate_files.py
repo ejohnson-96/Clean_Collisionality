@@ -156,6 +156,7 @@ def encounter_generator(
                     error_data[x][y][z] = np.interp(t_, xp, fp)
                     # error_data[x][y][z] = np.resize(error_data[x][y][z], min_len)
 
+        t_
         for y in sc_data[x].keys():
             xp = sc_data[x][y][t]
             for z in sc_data[x][y].keys():
@@ -169,6 +170,9 @@ def encounter_generator(
     print('Generating velocity magnitudes and temperature file... \n')
     mm_data = sc_gen.scalar_velocity(mm_data)
     psp_temps, wind_temps = sc_gen.scalar_temps(mm_data, sc_data)
+    encounters = ['E4','E6','E7']
+    for encounter in encounters:
+        print('wtf', len(psp_temps[encounter]['theta_ap']))
 
     #tol_value = 5
     #guess = {4: 11.5, 6: 3.5, 7: 7.8}
@@ -206,10 +210,14 @@ def encounter_generator(
             wind_scalar_temps[value] = []
 
     for key in psp_scalar_temps.keys():
+        print(psp_temps.keys())
         for encount in psp_temps.keys():
+            print(encount, key)
+            print(len(psp_temps[encount][key]))
             for i in range(len(psp_temps[encount][key])):
                 psp_scalar_temps[key].append(psp_temps[encount][key][i])
 
+        print(len(psp_scalar_temps[key]))
     for key in wind_scalar_temps.keys():
         for encount in wind_temps.keys():
             for i in range(len(wind_temps[encount][key])):

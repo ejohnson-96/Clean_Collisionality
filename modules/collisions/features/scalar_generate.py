@@ -55,67 +55,60 @@ def scalar_temps(
                        'alpha_scalar_temp', 'theta_ap', 'dens_ap',
                        'proton_perpar', 'alpha_perpar', 'proton_1_k', 'alpha_k', 'time',
                        'proton_R', 'alpha_R',]
-
-
-
-    wind_result_keys = ['wind_alpha_scalar_temp', 'wind_proton_scalar_temp', 'wind_theta']
     wind_result = {}
+    wind_result_keys = ['wind_alpha_scalar_temp', 'wind_proton_scalar_temp', 'wind_theta']
 
     res_psp = {}
     res_wind = {}
 
-    L = 0
     for key in solar_data.keys():
-        for value in solar_data[key].keys():
-            L = L + len(solar_data[key][value][t])
-    L = int(L/2)
-    print(L)
-    for res_key in psp_result_keys:
-        psp_result[res_key] = np.zeros(L)
-
-    for i in range(len(wind_result_keys)):
-        wind_result[wind_result_keys[i]] = np.zeros(L)
-
-
-    for key in solar_data.keys():
+        L = 0
         encount = key
-        print(key)
         file_val = []
-        wind = spc_data[encount]['Wind_Temps.csv']
         for value in solar_data[key].keys():
             file_val.append(value)
         p = file_val[0]
         a = file_val[1]
+
         L = len(solar_data[key][p][t])
+        for res_key in psp_result_keys:
+            psp_result[res_key] = np.zeros(L)
+
+        for res_key in wind_result_keys:
+            wind_result[res_key] = np.zeros(L)
+
         for i in range(L):
+
             #print(solar_data[encount][p]['Tperp1'][i], solar_data[encount][p]['Trat1'][i])
             psp_result['proton_scalar_temp_1'][i] = (
                         (2 * solar_data[encount][p]['Tperp1'][i] + solar_data[encount][p]['Trat1'][i]) / 3)
             psp_result['proton_scalar_temp_2'][i] = (
                         (2 * solar_data[encount][p]['Tperp2'][i] + solar_data[encount][p]['Trat2'][i]) / 3)
-            psp_result['proton_perpar'][i] = solar_data[encount][p]['Tperp1'][i] / \
-                                             solar_data[encount][p]['Trat1'][i]
-            psp_result['proton_1_k'][i] = psp_result['proton_scalar_temp_1'][i] * factor
-            psp_result['proton_R'][i] = solar_data[encount][p]['Tperp1'][i] / solar_data[encount][p]['Trat1'][i]
+            psp_result['proton_perpar'][i] = (solar_data[encount][p]['Tperp1'][i] / \
+                                             solar_data[encount][p]['Trat1'][i])
+            psp_result['proton_1_k'][i] = (psp_result['proton_scalar_temp_1'][i] * factor)
+            psp_result['proton_R'][i] = (solar_data[encount][p]['Tperp1'][i] / solar_data[encount][p]['Trat1'][i])
 
-            psp_result['alpha_scalar_temp'][i] = (2 * solar_data[encount][a]['Ta_perp'][i] +
-                                                  solar_data[encount][a]['Trat'][i]) / 3
-            psp_result['alpha_perpar'][i] = solar_data[encount][a]['Ta_perp'][i] / \
-                                            solar_data[encount][a]['Trat'][i]
-            psp_result['alpha_k'][i] = psp_result['alpha_scalar_temp'][i] * factor
-            psp_result['alpha_R'][i] = solar_data[encount][a]['Ta_perp'][i] / solar_data[encount][a]['Trat'][i]
+            psp_result['alpha_scalar_temp'][i] = ((2 * solar_data[encount][a]['Ta_perp'][i] +
+                                                  solar_data[encount][a]['Trat'][i]) / 3)
+            psp_result['alpha_perpar'][i] = (solar_data[encount][a]['Ta_perp'][i] / \
+                                            solar_data[encount][a]['Trat'][i])
+            psp_result['alpha_k'][i] = (psp_result['alpha_scalar_temp'][i] * factor)
+            psp_result['alpha_R'][i] = (solar_data[encount][a]['Ta_perp'][i] / solar_data[encount][a]['Trat'][i])
 
             if psp_result['proton_scalar_temp_1'][i] == 0:
                 psp_result['theta_ap'][i] = 0
             else:
-                psp_result['theta_ap'][i] = psp_result['alpha_scalar_temp'][i] / \
-                                            psp_result['proton_scalar_temp_1'][i]
+                psp_result['theta_ap'][i] = (psp_result['alpha_scalar_temp'][i] / \
+                                            psp_result['proton_scalar_temp_1'][i])
 
             if solar_data[encount][p]['np1'][i] == 0:
                 psp_result['dens_ap'][i] = 0
             else:
-                psp_result['dens_ap'][i] = solar_data[encount][a]['na'][i] / solar_data[encount][p]['np1'][i]
+                psp_result['dens_ap'][i] = (solar_data[encount][a]['na'][i] / solar_data[encount][p]['np1'][i])
 
+
+            wind = spc_data[encount]['Wind_Temps.csv']
 
             arg_ = spc_data[encount]['Wind_Temps.csv']['TEMP_ALPHA_S/C_eV'][i]
 
@@ -124,12 +117,12 @@ def scalar_temps(
             else:
                 wind_result['wind_alpha_scalar_temp'][i] = arg_
 
-            wind_result['wind_proton_scalar_temp'][i] = wind['TEMP_PROTN_S/C_eV'][i]
+            wind_result['wind_proton_scalar_temp'][i] = (wind['TEMP_PROTN_S/C_eV'][i])
 
             if wind['TEMP_PROTN_S/C_eV'][i] == 0:
                 wind['TEMP_PROTN_S/C_eV'][i] = 10*30
 
-            wind_result['wind_theta'][i] = wind['TEMP_ALPHA_S/C_eV'][i] /wind['TEMP_PROTN_S/C_eV'][i]
+            wind_result['wind_theta'][i] = (wind['TEMP_ALPHA_S/C_eV'][i] /wind['TEMP_PROTN_S/C_eV'][i])
 
         #psp_result['theta_ap'] = theta_ap_.validate_theta(psp_result['theta_ap'])
         #wind_result['wind_theta'] = theta_ap_.validate_theta(wind_result['wind_theta'])
@@ -137,5 +130,12 @@ def scalar_temps(
         res_psp[encount] = psp_result
         res_wind[encount] = wind_result
 
+        for name in psp_result_keys:
+            print(name, len(res_psp[encount][name]))
+        print('how?', encount, len(res_psp[encount]['theta_ap']))
+
+    encounters = ['E4','E6','E7']
+    for encounter in encounters:
+        print('fuck off?', encounter, len(res_psp[encounter]['theta_ap']))
 
     return res_psp, res_wind
