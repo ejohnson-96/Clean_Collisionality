@@ -12,7 +12,7 @@ from modules.core.loadsave import file_dir as fdir
 
 from modules.collisions.loadsave import loadsave as rw
 from modules.collisions.features import lat_lon as lat_lon, \
-    scalar_generate as sc_gen
+    scalar_generate as sc_gen, scrub as scrub
 from modules.collisions.model import theta_ap as theta_ap, errors as error
 
 initialise_constants()
@@ -100,7 +100,7 @@ def encounter_generator(
 
     h = 1
     while h > 0:
-        data_set_input = 'F' #input('Full data set or singular? (F/S)')
+        data_set_input = input('Full data set or singular? (F/S)')
         if data_set_input in valid_full:
             encount = 0
             h = 0
@@ -137,47 +137,10 @@ def encounter_generator(
 
     # Generate equal sized arays for all data
 
-    mm_len_max = 0
-    error_len_max = 0
-    sc_len_max = 0
-
     for x in enc.encounter:
-        for y in mm_data[x].keys():
-            if len(mm_data[x][y][t]) > mm_len_max:
-                mm_len_max = len(mm_data[x][y][t])
-                arg_encount_ = x
-                arg_mm_file = y
+        res = list(mm_data[x].keys())[0]
+        t_ = mm_data[x][res][t]
 
-        if error_files:
-            for y in error_data[x].keys():
-                if len(error_data[x][y][t]) > error_len_max:
-                    error_len_max = len(error_data[x][y][t])
-                    arg_encount_ = x
-                    arg_error_file = y
-        else:
-            pass
-
-        for y in sc_data[x].keys():
-            if len(sc_data[x][y][t]) > sc_len_max:
-                sc_len_max = len(sc_data[x][y][t])  # here
-                arg_encount_ = x
-                arg_sc_file = y
-
-    lengths = [mm_len_max, error_len_max, sc_len_max]
-    max_len = max(lengths)
-
-    if max_len == lengths[0]:
-        t_ = mm_data[arg_encount_][arg_mm_file][t]
-    elif max_len == lengths[1]:
-        t_ = error_data[arg_encount_][arg_error_file][t]
-    elif max_len == lengths[2]:
-        t_ = sc_data[arg_encount_][arg_sc_file][t]
-
-    t_ = mm_data[arg_encount_][arg_mm_file][t]
-    val = 1
-    min_len = int(len(t_) * val)
-
-    for x in enc.encounter:
         for y in mm_data[x].keys():
             xp = mm_data[x][y][t]
             for z in mm_data[x][y].keys():
@@ -204,23 +167,23 @@ def encounter_generator(
 
     # Generate temperatures and velocity magnitudes
     print('Generating velocity magnitudes and temperature file... \n')
-    scalar_velocity = sc_gen.scalar_velocity(mm_data)
+    mm_data = sc_gen.scalar_velocity(mm_data)
     psp_temps, wind_temps = sc_gen.scalar_temps(mm_data, sc_data)
 
-    tol_value = 5
-    guess = {4: 11.5, 6: 3.5, 7: 7.8}
-    if encounter_number == 0:
-        for key in psp_temps.keys():
-            value = int(cm.remove_begin(key))
-            print(key, value)
-            print(type(psp_temps[key]['theta_ap']))
-            psp_temps[key]['theta_ap'] = theta_ap.remove_theta(psp_temps[key]['theta_ap'],
-                                                               guess[value], tol_value)
-    else:
-        arg_ = str('E' + str(encounter_number))
-        psp_temps[arg_]['theta_ap'] = theta_ap.remove_theta(psp_temps[arg_]['theta_ap'],
-                                                            guess[encounter_number],
-                                                            tol_value)
+    #tol_value = 5
+    #guess = {4: 11.5, 6: 3.5, 7: 7.8}
+    #if encounter_number == 0:
+    #    for key in psp_temps.keys():
+    #        value = int(cm.remove_begin(key))
+    #        print(key, value)
+    #        print(type(psp_temps[key]['theta_ap']))
+    #        psp_temps[key]['theta_ap'] = theta_ap.remove_theta(psp_temps[key]['theta_ap'],
+    #                                                           guess[value], tol_value)
+    #else:
+    #    arg_ = str('E' + str(encounter_number))
+    #    psp_temps[arg_]['theta_ap'] = theta_ap.remove_theta(psp_temps[arg_]['theta_ap'],
+    #                                                        guess[encounter_number],
+    #                                                        tol_value)
 
     # Generate file and/or combine files (remember to do the scalar temp files)
     print('Generating data file... \n')
@@ -309,7 +272,7 @@ def encounter_generator(
                     spc_data[y][z].append(sc_data[encount][y][z][w])
 
     print('Scrubbing data...')
-    # solar_data, errors, spc_data = scrub.scrub_data(solar_data, errors, spc_data)
+    #solar_data, errors, spc_data = scrub.scrub_data(solar_data, errors, spc_data)
 
     spc_data[enc.sc_names[2]] = lat_lon.latlong_psp(spc_data[enc.sc_names[2]])
     spc_data[enc.sc_names[1]] = lat_lon.latlong_wind(spc_data[enc.sc_names[1]])
@@ -318,6 +281,19 @@ def encounter_generator(
     solar_data[t] = []
     for i in range(len(solar_data[p][t])):
         solar_data[t].append(converter.epoch_time(solar_data[p][t][i]))
+
+
+    particles = [p,a]
+    for particle in particles:
+        for key in solar_data[particle].keys():
+            print(key, len(solar_data[particle][key]))
+    for key in spc_data.keys():
+        for value in spc_data[key].keys():
+            print(key, value, len(spc_data[key][value]))
+    for key in psp_scalar_temps.keys():
+        print(key, len(psp_scalar_temps[key]))
+
+
     theta_ap_0 = psp_scalar_temps['theta_ap']
     wind_radius = wind_rad
     theta_ap_final = theta_ap.make_theta_vals(solar_data, spc_data, psp_scalar_temps,

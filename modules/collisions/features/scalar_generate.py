@@ -17,7 +17,7 @@ def scalar_velocity(
 
         for value in data[key].keys():
             file_val.append(value)
-            print(value)
+
         p = file_val[0]
         a = file_val[1]
 
@@ -25,20 +25,21 @@ def scalar_velocity(
         data[encount][a]['v_mag'] = []
 
         L = len(data[encount][p][t])
+        l = len(data[encount][a][t])
 
         for i in range(L):
             arg_p_ = (data[encount][p]['vp1_x'][i]) ** 2 + (data[encount][p]['vp1_y'][i]) ** 2 + (
             data[encount][p]['vp1_z'][i]) ** 2
-            arg_a_ = (data[encount][a]['va_x'][i]) ** 2 + (data[encount][a]['va_y'][i]) ** 2 + (
-            data[encount][a]['va_z'][i]) ** 2
-
             if arg_p_ < 0:
                 arg_p_ = 0
+            data[encount][p]['v_mag'].append(np.sqrt(arg_p_))
+        for i in range(l):
+            arg_a_ = (data[encount][a]['va_x'][i]) ** 2 + (data[encount][a]['va_y'][i]) ** 2 + (
+            data[encount][a]['va_z'][i]) ** 2
             if arg_a_ < 0:
                 arg_a_ = 0
-
-            data[encount][p]['v_mag'].append(np.sqrt(arg_p_))
             data[encount][a]['v_mag'].append(np.sqrt(arg_a_))
+
     return data
 
 
@@ -48,11 +49,6 @@ def scalar_temps(
 ):
 
     factor = 11604
-
-    for key in solar_data.keys():
-        for value in solar_data[key].keys():
-            for element in solar_data[key][value].keys():
-                L = len(solar_data[key][value][element])
 
     psp_result = {}
     psp_result_keys = ['proton_scalar_temp_1', 'proton_scalar_temp_2',
@@ -68,6 +64,12 @@ def scalar_temps(
     res_psp = {}
     res_wind = {}
 
+    L = 0
+    for key in solar_data.keys():
+        for value in solar_data[key].keys():
+            L = L + len(solar_data[key][value][t])
+    L = int(L/2)
+    print(L)
     for res_key in psp_result_keys:
         psp_result[res_key] = np.zeros(L)
 
@@ -77,14 +79,16 @@ def scalar_temps(
 
     for key in solar_data.keys():
         encount = key
+        print(key)
         file_val = []
         wind = spc_data[encount]['Wind_Temps.csv']
         for value in solar_data[key].keys():
             file_val.append(value)
         p = file_val[0]
         a = file_val[1]
-
+        L = len(solar_data[key][p][t])
         for i in range(L):
+            #print(solar_data[encount][p]['Tperp1'][i], solar_data[encount][p]['Trat1'][i])
             psp_result['proton_scalar_temp_1'][i] = (
                         (2 * solar_data[encount][p]['Tperp1'][i] + solar_data[encount][p]['Trat1'][i]) / 3)
             psp_result['proton_scalar_temp_2'][i] = (
@@ -127,8 +131,8 @@ def scalar_temps(
 
             wind_result['wind_theta'][i] = wind['TEMP_ALPHA_S/C_eV'][i] /wind['TEMP_PROTN_S/C_eV'][i]
 
-        psp_result['theta_ap'] = theta_ap_.validate_theta(psp_result['theta_ap'])
-        wind_result['wind_theta'] = theta_ap_.validate_theta(wind_result['wind_theta'])
+        #psp_result['theta_ap'] = theta_ap_.validate_theta(psp_result['theta_ap'])
+        #wind_result['wind_theta'] = theta_ap_.validate_theta(wind_result['wind_theta'])
 
         res_psp[encount] = psp_result
         res_wind[encount] = wind_result

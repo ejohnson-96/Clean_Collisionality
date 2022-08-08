@@ -2,7 +2,6 @@ from modules.collisions.constants import *
 from modules.collisions.features import lat_lon
 
 const()
-error_files = enc.error_files_loaded
 
 def clean(
         array,
