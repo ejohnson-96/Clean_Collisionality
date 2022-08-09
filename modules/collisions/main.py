@@ -22,7 +22,7 @@ for i in range(len(parent_name) + 1):
 path = sm.jwos(sm.slash_check(sm.slash_check(path)),'data',slash,'save',slash)
 
 encounters = ['EA', 'E4', 'E6', 'E7']
-vals = [0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 2.0]
+vals = [0.1,0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 2.0]
 paths = {}
 for encount in encounters:
     paths[encount] = {}
