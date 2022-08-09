@@ -9,7 +9,7 @@ from modules.core.features import graph as graph
 from modules.core.variables import char_man as cm, string_man as sm
 import generate_files as gen_files
 
-#vals = [0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0,2.0]
+#vals = [0.1]
 #for val in vals:
 #gen_files.encounter_generator(val, False)
 
@@ -31,7 +31,7 @@ for encount in encounters:
 
 h = 1
 user_enc = 'EA'
-user_rad = 1.0
+user_rad = 0.1
 
 path = paths[user_enc][user_rad]
 
@@ -68,8 +68,8 @@ val = 0.1 #0.000001
 val2 = 0.1 #0.000001
 val3 = 0.1
 
-bn_i = int((max(theta_i) - min(theta_i))/0.1)
-bn_f = int((max(theta_f) - min(theta_f))/1)
+bn_i = int((max(theta_i) - min(theta_i))/0.3)
+bn_f = int((max(theta_f) - min(theta_f))/0.3)
 bn_w = 75 #int((max(theta_w)-min(theta_w))/val3)
 print(max(theta_i), min(theta_i))
 
@@ -113,6 +113,6 @@ color = ['blue','black']#,'red']
 style = ['-','--']#,'--']
 
 #graph.graph(binscenters_f, data_entries_f)
-graph.graph(binscenters_i, data_entries_i, title='', x_axis=x_label, y_axis=y_label, limits=True, x_lim=15, y_lim=1)
+graph.graph(binscenters_f, data_entries_f, title='', x_axis=x_label, y_axis=y_label, limits=True, x_lim=15, y_lim=1)
 
 #graph.graph(xspace, y, colours=color, style_line=style, title='', x_axis=x_label, y_axis=y_label, limits=True, x_lim=15, y_lim=0.5 )
