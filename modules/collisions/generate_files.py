@@ -170,9 +170,7 @@ def encounter_generator(
     print('Generating velocity magnitudes and temperature file... \n')
     mm_data = sc_gen.scalar_velocity(mm_data)
     psp_temps, wind_temps = sc_gen.scalar_temps(mm_data, sc_data)
-    encounters = ['E4','E6','E7']
-    for encounter in encounters:
-        print('wtf', len(psp_temps[encounter]['theta_ap']))
+
 
     #tol_value = 5
     #guess = {4: 11.5, 6: 3.5, 7: 7.8}

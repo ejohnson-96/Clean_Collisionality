@@ -9,9 +9,9 @@ from modules.core.features import graph as graph
 from modules.core.variables import char_man as cm, string_man as sm
 import generate_files as gen_files
 
-vals = [0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0,2.0]
-for val in vals:
-    gen_files.encounter_generator(val, False)
+#vals = [0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0,2.0]
+#for val in vals:
+#gen_files.encounter_generator(val, False)
 
 slash = fd.slash()
 parent_name = fd.dir_name(fd.dir_parent())
@@ -30,8 +30,8 @@ for encount in encounters:
         paths[encount][val] = sm.jwos(path,encount,slash,str(val),slash)
 
 h = 1
-user_enc = 'EA'
-user_rad = 2.0
+user_enc = 'E6'
+user_rad = '1.0'
 
 path = paths[user_enc][user_rad]
 
@@ -63,6 +63,10 @@ bn_i = int((max(theta_i) - min(theta_i))/val)
 bn_f = 32 #int((max(theta_f)-min(theta_f))/val2)
 bn_w = 75 #int((max(theta_w)-min(theta_w))/val3)
 
+theta_i = theta_i[np.logical_not(np.isnan(theta_i))]
+theta_f = theta_f[np.logical_not(np.isnan(theta_f))]
+#theta_w = theta_w[np.logical_not(np.isnan(theta_w))]
+
 print(bn_i, bn_f, bn_w)
 print(len(theta_i))
 print(len(theta_w))
@@ -71,10 +75,6 @@ print(theta_f)
 for i in range(len(theta_i)):
     if not isinstance(theta_i[i], (float, int)):
         print(theta_i[i])
-
-theta_i = theta_i[np.logical_not(np.isnan(theta_i))]
-theta_f = theta_f[np.logical_not(np.isnan(theta_f))]
-#theta_w = theta_w[np.logical_not(np.isnan(theta_w))]
 
 data_entries_i, bins_i = np.histogram(theta_i, bins=bn_i, density=True)
 data_entries_f, bins_f = np.histogram(theta_f, bins=bn_f, density=True, )
