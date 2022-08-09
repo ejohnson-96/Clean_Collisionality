@@ -30,14 +30,23 @@ for encount in encounters:
         paths[encount][val] = sm.jwos(path,encount,slash,str(val),slash)
 
 h = 1
-user_enc = 'E6'
-user_rad = '1.0'
+user_enc = 'EA'
+user_rad = 1.0
 
 path = paths[user_enc][user_rad]
 
 theta_i = np.loadtxt(sm.jwos(path,'theta_i.txt'))
 theta_f = np.loadtxt(sm.jwos(path,'theta_f.txt'))
 theta_w = np.loadtxt(sm.jwos(path,'wind_theta.txt'))
+
+data = [theta_i, theta_f, theta_w]
+
+for file in data:
+    for i in range(len(file)):
+        if file[i] > 15:
+            file[i] = 15
+        else:
+            file[i] = file[i]
 
 
 label_i = '0.1 - 0.2 AU'
@@ -59,9 +68,10 @@ val = 0.1 #0.000001
 val2 = 0.1 #0.000001
 val3 = 0.1
 
-bn_i = int((max(theta_i) - min(theta_i))/val)
-bn_f = 32 #int((max(theta_f)-min(theta_f))/val2)
+bn_i = int((max(theta_i) - min(theta_i))/0.1)
+bn_f = int((max(theta_f) - min(theta_f))/1)
 bn_w = 75 #int((max(theta_w)-min(theta_w))/val3)
+print(max(theta_i), min(theta_i))
 
 theta_i = theta_i[np.logical_not(np.isnan(theta_i))]
 theta_f = theta_f[np.logical_not(np.isnan(theta_f))]
@@ -75,7 +85,7 @@ print(theta_f)
 for i in range(len(theta_i)):
     if not isinstance(theta_i[i], (float, int)):
         print(theta_i[i])
-
+print(len(theta_i))
 data_entries_i, bins_i = np.histogram(theta_i, bins=bn_i, density=True)
 data_entries_f, bins_f = np.histogram(theta_f, bins=bn_f, density=True, )
 #data_entries_w, bins_w = np.histogram(theta_w, bins=bn_w, density=True)
