@@ -31,7 +31,7 @@ for encount in encounters:
 
 h = 1
 user_enc = 'EA'
-user_rad = 0.1
+user_rad = 1.0
 
 path = paths[user_enc][user_rad]
 
@@ -68,26 +68,23 @@ val = 0.1 #0.000001
 val2 = 0.1 #0.000001
 val3 = 0.1
 
-bn_i = int((max(theta_i) - min(theta_i))/0.3)
-bn_f = int((max(theta_f) - min(theta_f))/0.3)
+bn_i = int((max(theta_i) - min(theta_i))/0.1)
+bn_f = int((max(theta_f) - min(theta_f))/0.1)
 bn_w = 75 #int((max(theta_w)-min(theta_w))/val3)
-print(max(theta_i), min(theta_i))
 
 theta_i = theta_i[np.logical_not(np.isnan(theta_i))]
 theta_f = theta_f[np.logical_not(np.isnan(theta_f))]
 #theta_w = theta_w[np.logical_not(np.isnan(theta_w))]
 
 print(bn_i, bn_f, bn_w)
-print(len(theta_i))
-print(len(theta_w))
 
-print(theta_f)
+
 for i in range(len(theta_i)):
     if not isinstance(theta_i[i], (float, int)):
         print(theta_i[i])
-print(len(theta_i))
-data_entries_i, bins_i = np.histogram(theta_i, bins=bn_i, density=True)
-data_entries_f, bins_f = np.histogram(theta_f, bins=bn_f, density=True, )
+
+data_entries_i, bins_i = np.histogram(smoothing.smooth(theta_i,1), bins=bn_i, density=True)
+data_entries_f, bins_f = np.histogram(smoothing.smooth(theta_f, 1), bins=bn_f, density=True, )
 #data_entries_w, bins_w = np.histogram(theta_w, bins=bn_w, density=True)
 
 binscenters_i = np.array([0.5 * (bins_i[i] + bins_i[i + 1]) for i in range(len(bins_i) - 1)])
@@ -103,16 +100,14 @@ binscenters_f = np.array([0.5 * (bins_f[i] + bins_f[i + 1]) for i in range(len(b
 #zspace = maxwellian(xspace, *pop_i)
 #wspace = second_fit_function(xspace, *pop_w)
 
-#y = {label_i:zspace, label_f:yspace, }#'Wind 1 AU':wspace}
+x = np.linspace(0,15, 149)
+y = {label_i:data_entries_i,}# label_f:data_entries_f, }#'Wind 1 AU':wspace}
 
 
 y_label = 'Probability Density'
 x_label = r'$\alpha$-Proton Relative Temperature'
 
-color = ['blue','black']#,'red']
-style = ['-','--']#,'--']
+color = ['blue']#,'black']#,'red']
+style = ['-']#,'--']#,'--']
 
-#graph.graph(binscenters_f, data_entries_f)
-graph.graph(binscenters_f, data_entries_f, title='', x_axis=x_label, y_axis=y_label, limits=True, x_lim=15, y_lim=1)
-
-#graph.graph(xspace, y, colours=color, style_line=style, title='', x_axis=x_label, y_axis=y_label, limits=True, x_lim=15, y_lim=0.5 )
+graph.graph(x, y, colours=color, style_line=style, title='', x_axis=x_label, y_axis=y_label, limits=True, x_lim=14, y_lim=0.5 )

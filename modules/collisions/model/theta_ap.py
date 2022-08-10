@@ -34,7 +34,6 @@ def remove_theta(
         rel_tol,
         smooth_=core_const.smooth,
 ):
-    print(type(theta))
 
     L = len(theta)
     if value is None:
