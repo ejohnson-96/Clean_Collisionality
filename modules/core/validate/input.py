@@ -1,5 +1,4 @@
 
-
 def validate_input_number(
         input,
 ):
@@ -39,3 +38,29 @@ def return_all_keys(
         else:
             result.append(key)
     return result
+
+
+def validate_input_string(
+        string,
+):
+    if not isinstance(string, str):
+        raise TypeError(
+            'Error: Argument is not a string, must be '
+            f'of type string, instead got type {type(string)}.'
+        )
+        return False
+    else:
+        return True
+
+def validate_bool(
+        input_bool,
+):
+
+    if not isinstance(input_bool, bool):
+        raise TypeError(
+            'Error: Argument is not a boolean, must be of'
+            f' type bool, instead got type {type(input_bool)}.'
+        )
+        return False
+    else:
+        return True

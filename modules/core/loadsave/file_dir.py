@@ -14,8 +14,6 @@ def dir_parent(
     return path
 
 
-parent_path = dir_parent()
-
 def dir_path(
 
 ):
@@ -25,9 +23,12 @@ def dir_path(
     return path
 
 
+path_dir = dir_path()
+
+
 def dir_make(
         name,
-        loc=parent_path,
+        loc=path_dir,
 ):
     if not isinstance(name, str):
         raise TypeError(
@@ -45,12 +46,13 @@ def dir_make(
         os.mkdir(path)
         return True
 
+
 def dir_name(
-    loc=None,
+        loc=None,
 ):
     if isinstance(loc, type(None)):
-        dir_path = os.getcwd()
-        return os.path.basename(dir_path)
+        path = os.getcwd()
+        return os.path.basename(path)
     else:
         if not isinstance(loc, str):
             raise TypeError(
@@ -69,7 +71,7 @@ def dir_name(
 
 
 def file_list(
-        loc=parent_path,
+        loc=path_dir,
 ):
     path = sm.slash_check(loc)
     res = next(os.walk(path))[2]
@@ -78,7 +80,7 @@ def file_list(
 
 
 def file_num(
-        loc=parent_path,
+        loc=path_dir,
 ):
     L = file_list(loc)
     res = len(L)
@@ -87,7 +89,7 @@ def file_num(
 
 
 def folder_list(
-        loc=parent_path,
+        loc=path_dir,
 ):
     path = sm.slash_check(loc)
     res = next(os.walk(path))[1]
@@ -96,7 +98,7 @@ def folder_list(
 
 
 def folder_num(
-        loc=parent_path,
+        loc=path_dir,
 ):
     L = folder_list(loc)
     res = len(L)
@@ -105,7 +107,7 @@ def folder_num(
 
 
 def dir_list(
-        loc=parent_path,
+        loc=path_dir,
 ):
     path = sm.slash_check(loc)
     res = os.listdir(path)
@@ -114,7 +116,7 @@ def dir_list(
 
 
 def dir_num(
-        loc=parent_path,
+        loc=path_dir,
 ):
     L = dir_list(loc)
     res = len(L)
@@ -131,4 +133,3 @@ def slash(
         return '\\'
     else:
         return '/'
-

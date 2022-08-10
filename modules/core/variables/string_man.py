@@ -1,5 +1,6 @@
 import validators
 
+
 def jws(
         a,
         b,
@@ -91,20 +92,20 @@ def slash_check(
             f"instead got {type(string)}"
         )
 
-
     if string.endswith("/") or string.endswith(str("\\")):
         res = string
     else:
         if '/' in string:
             res = jwos(string, '/')
         elif "\\" in string:
-            res = jwos(string,"\\")
+            res = jwos(string, "\\")
         else:
             raise ValueError(
                 "Error: No slash in string."
             )
 
     return res
+
 
 def web_check(
         url,
@@ -138,12 +139,9 @@ def web_check(
         )
 
 
-
 def split(
         string,
         character,
         loc,
 ):
-
     return
-
