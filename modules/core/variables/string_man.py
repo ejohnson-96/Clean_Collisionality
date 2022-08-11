@@ -1,6 +1,5 @@
 import validators
 
-
 def jws(
         a,
         b,

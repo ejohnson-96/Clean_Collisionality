@@ -93,7 +93,8 @@ def theta_ap_0(r_0, r_1, n_p_1, eta_ap, v_p_1, t_p_1, theta_ap_1,
         is_list_like = False
 
     # Loop.
-
+    save_theta = []
+    save_radius =[]
     for i in range(n_step):
 
         r = r_1 + ((i + 1) * d_r)
@@ -119,6 +120,8 @@ def theta_ap_0(r_0, r_1, n_p_1, eta_ap, v_p_1, t_p_1, theta_ap_1,
                       (d_r))
 
         theta_ap = theta_ap + d_theta_ap
+        save_theta.append(theta_ap)
+        save_radius.append(r)
 
         if (is_list_like):
             tk_i = np.where(theta_ap < theta_ap_min)
@@ -131,6 +134,11 @@ def theta_ap_0(r_0, r_1, n_p_1, eta_ap, v_p_1, t_p_1, theta_ap_1,
             theta_ap[tk_i] = theta_ap_max
         else:
             theta_ap = min([theta_ap, theta_ap_max])
+
+    fn1 = 'theta' + str(theta_ap_1) + '.txt'
+    fn2 = 'radius' + str(theta_ap_1) + '.txt'
+    #np.savetxt(fn1, save_theta)
+    #np.savetxt(fn2, save_radius)
 
     return theta_ap
 
@@ -148,7 +156,7 @@ def theta_loop(
 
     L = len(time)
     final_theta = np.zeros(L)
-    for i in range(int(L)):
+    for i in range(L):
         final_theta[i] = theta_ap_0(wind_radius[i], psp_radius[i], density_p[i],
                                     density_ap[i], speed[i], temp[i], theta[i])
         print('\r', f"{(i / L) * 100:.2f} %", end="")

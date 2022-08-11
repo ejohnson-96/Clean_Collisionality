@@ -9,9 +9,9 @@ from modules.core.features import graph as graph
 from modules.core.variables import char_man as cm, string_man as sm
 import generate_files as gen_files
 
-#vals = [0.1]
+#vals = [1.0]
 #for val in vals:
-#gen_files.encounter_generator(val, False)
+#    gen_files.encounter_generator(val, False)
 
 slash = fd.slash()
 parent_name = fd.dir_name(fd.dir_parent())
@@ -33,13 +33,21 @@ h = 1
 user_enc = 'EA'
 user_rad = 1.0
 
-path1 = paths[user_enc][0.1]
-path2 = paths['E6'][0.1]
+path1 = paths[user_enc][1.0]
+path2 = paths['E6'][0.3]
 path3 = paths[user_enc][1.0]
 
 theta_i = np.loadtxt(sm.jwos(path3,'theta_f.txt'))
 theta_f = np.loadtxt(sm.jwos(path2,'wind_theta.txt'))
 theta_w = np.loadtxt(sm.jwos(path3,'theta_f.txt'))
+
+print(fd.dir_path())
+print(fd.file_list())
+print(fd.file)
+#radius = np.loadtxt('radius7.663865827235904.txt')
+#theta = np.loadtxt('theta7.663865827235904.txt')
+
+#graph.graph(radius, theta)
 
 data = [theta_i, theta_f, theta_w]
 
@@ -66,13 +74,13 @@ def fit_function(x, r, m, s, q, n, t, ):
 def second_fit_function(x, r, m, s, q, n, t, ):
     return maxwellian(x, r, m,s) + maxwellian(x,q,n,t)
 
-val = 0.48
+val = 0.000001
 val2 = val
 val3 = val
 
 n = 1
 
-bn_i = 100 #int((max(theta_i) - min(theta_i))/val)
+bn_i = 50 #int((max(theta_i) - min(theta_i))/val)
 bn_f = bn_i #int((max(theta_f) - min(theta_f))/val2)
 bn_w = bn_i #int((max(theta_w)-min(theta_w))/val3)
 
@@ -94,15 +102,67 @@ weg1 = np.ones_like(theta_i)/float(len(theta_i))
 weg2 = np.ones_like(theta_f)/float(len(theta_f))
 weg3 = np.ones_like(theta_w)/float(len(theta_w))
 
-data_entries_i, bins_i= np.histogram(smoothing.smooth(theta_i, smooth_val), range=(0,15), weights=weg1, bins=bn_i, density=1)
-data_entries_f, bins_f = np.histogram(smoothing.smooth(theta_f,smooth_val), range=(0,15), weights=weg2, bins=bn_f, density=1)
-data_entries_w, bins_w = np.histogram(smoothing.smooth(theta_w, smooth_val), range=(0,15), weights=weg3, bins=bn_w, density=1)
+#plt.hist(smoothing.smooth(theta_i, smooth_val), range=(0,15), weights=weg1, bins=bn_i, density=1 )
+#plt.hist(smoothing.smooth(theta_f,smooth_val), range=(0,15), weights=weg2, bins=bn_f, density=1)
+#plt.hist(smoothing.smooth(theta_w, smooth_val), range=(0,15), weights=weg3, bins=bn_w, density=1)
+#plt.show()
+val = 0.08
+plt.figure(figsize=(10,10))
+print(theta_i, len(theta_i))
+results, edges = np.histogram(theta_i, range=(0,15), weights=weg1, bins=bn_i, density=1, )
+binWidth = edges[1] - edges[0]
+print(binWidth)
 
-binscenters_i = np.array([0.5 * (bins_i[i] + bins_i[i + 1]) for i in range(len(bins_i) - 1)])
-binscenters_f = np.array([0.5 * (bins_f[i] + bins_f[i + 1]) for i in range(len(bins_f) - 1)])
-binscenters_w = np.array([0.5 * (bins_w[i] + bins_w[i + 1]) for i in range(len(bins_w) - 1)])
+def make_bars(
+        x,
+        y,
+        width,
+):
+    xs = [x[0] - width]
+    ys = [0]
+    for i in range(len(x)):
+        xs.append(x[i] - width)
+        xs.append(x[i] + width)
+        ys.append(y[i])
+        ys.append(y[i])
+    xs.append(x[-1] + width)
+    ys.append(y[-1])
+
+    return xs, ys
+font = 'Courier New'
+xs, ys = make_bars(edges[:-1], results*binWidth, val)
+plt.plot(xs, ys, color='black', linestyle='--', linewidth=2, label='1.0 au', )
+plt.ylabel('Probability Density', fontsize=30, fontname=font)
+plt.xlabel(r'$\alpha$-Proton Relative Temperature, $\theta_{\alpha p} = \frac{T_{\alpha}}{T_{p}}$', fontsize=24,fontname=font)
+plt.xticks(fontsize=24)
+plt.yticks(fontsize=24)
+plt.grid()
+
+plt.xlim(0, 14)
+plt.ylim(0,0.5)
+plt.tight_layout(pad=10 * 0.5)
 
 
+
+results, edges = np.histogram(theta_f, range=(0,14), weights=weg2, bins=bn_f, density=1, )
+binWidth = edges[1] - edges[0]
+print(binWidth)
+xs, ys = make_bars(edges[:-1], results*binWidth, val)
+#plt.bar(edges[:-1], results*binWidth, binWidth)
+plt.plot(xs, ys, color='blue', linestyle='-', linewidth=2, label='Wind @ 1.0 au')
+
+results, edges = np.histogram(theta_w, range=(0,14), weights=weg3, bins=bn_w, density=1)
+binWidth = edges[1] - edges[0]
+xs, ys = make_bars(edges[:-1], results*binWidth, val,)
+#plt.plot(xs, ys, color='blue', linestyle='-.', linewidth=2, label='1.0 au')
+
+plt.legend(loc='upper right', prop={'size': 30})
+plt.show()
+
+
+#binscenters_i = np.array([0.5 * (bins_i[i] + bins_i[i + 1]) for i in range(len(bins_i) - 1)])
+#binscenters_f = np.array([0.5 * (bins_f[i] + bins_f[i + 1]) for i in range(len(bins_f) - 1)])
+#binscenters_w = np.array([0.5 * (bins_w[i] + bins_w[i + 1]) for i in range(len(bins_w) - 1)])
 
 
 
@@ -116,7 +176,7 @@ binscenters_w = np.array([0.5 * (bins_w[i] + bins_w[i + 1]) for i in range(len(b
 #wspace = second_fit_function(xspace, *pop_w)
 
 x = np.linspace(0,14, bn_i)
-y = {'1.0 AU':data_entries_i, 'Wind @ 1.0 AU':data_entries_f, }#'1.0 AU':data_entries_w}
+#y = {'1.0 AU':data_entries_i, 'Wind @ 1.0 AU':data_entries_f, }#'1.0 AU':data_entries_w}
 
 
 y_label = 'Probability Density'
@@ -125,4 +185,4 @@ x_label = r'$\alpha$-Proton Relative Temperature'
 color = ['gray','black',]#'blue']
 style = ['-','--']#,'--']
 
-graph.graph(x, y, colours=color, style_line=style, title='', x_axis=x_label, y_axis=y_label, limits=True, x_lim=14, y_lim=1, line_width=2)
+#graph.graph(x, y, colours=color, style_line=style, title='', x_axis=x_label, y_axis=y_label, limits=True, x_lim=14, y_lim=1, line_width=2)
