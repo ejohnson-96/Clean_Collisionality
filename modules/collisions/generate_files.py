@@ -108,7 +108,7 @@ def encounter_generator(
             g = 1
             while g > 0:
                 enc_input = input('Please enter an encounter:')
-                if nm.validate_input_number(enc_input):
+                if sm.valid_string(enc_input):
                     if int(enc_input) in valid_enc:
                         encount = int(enc_input)
                         g = 0
@@ -287,17 +287,6 @@ def encounter_generator(
     solar_data[t] = []
     for i in range(len(solar_data[p][t])):
         solar_data[t].append(converter.epoch_time(solar_data[p][t][i]))
-
-
-    particles = [p,a]
-    for particle in particles:
-        for key in solar_data[particle].keys():
-            print(key, len(solar_data[particle][key]))
-    for key in spc_data.keys():
-        for value in spc_data[key].keys():
-            print(key, value, len(spc_data[key][value]))
-    for key in psp_scalar_temps.keys():
-        print(key, len(psp_scalar_temps[key]))
 
 
     theta_ap_0 = psp_scalar_temps['theta_ap']

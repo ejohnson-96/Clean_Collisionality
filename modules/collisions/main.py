@@ -9,9 +9,9 @@ from modules.core.features import graph as graph
 from modules.core.variables import char_man as cm, string_man as sm
 import generate_files as gen_files
 
-vals = [1.0]
-for val in vals:
-    gen_files.encounter_generator(val, False)
+#vals = [1.0]
+#for val in vals:
+#    gen_files.encounter_generator(val, False)
 
 slash = fd.slash()
 
@@ -40,16 +40,17 @@ def gen_load_paths(
 paths = gen_load_paths()
 
 h = 1
-user_enc = 'EA'
+user_enc = 'E6'
 user_rad = 1.0
 
 path1 = paths[user_enc][1.0]
-path2 = paths['E6'][0.3]
-path3 = paths[user_enc][1.0]
+path2 = paths[user_enc][0.1]
+path3 = paths[user_enc][0.3]
 
-theta_i = np.loadtxt(sm.jwos(path3, 'theta_f.txt'))
-theta_f = np.loadtxt(sm.jwos(path2, 'wind_theta.txt'))
-theta_w = np.loadtxt(sm.jwos(path3, 'theta_f.txt'))
+theta_i = np.loadtxt(sm.jwos(path1, 'theta_i.txt'))
+theta_f = np.loadtxt(sm.jwos(path1, 'theta_f.txt'))
+theta_d = np.loadtxt(sm.jwos(path1, 'noise_theta_i.txt'))
+theta_w = np.loadtxt(sm.jwos(path1, 'noise_theta_f.txt'))
 
 
 print(fd.dir_path())
@@ -94,10 +95,12 @@ n = 1
 bn_i = 50  # int((max(theta_i) - min(theta_i))/val)
 bn_f = bn_i  # int((max(theta_f) - min(theta_f))/val2)
 bn_w = bn_i  # int((max(theta_w)-min(theta_w))/val3)
+bn_d = bn_i
 
 theta_i = theta_i[np.logical_not(np.isnan(theta_i))]
 theta_f = theta_f[np.logical_not(np.isnan(theta_f))]
 theta_w = theta_w[np.logical_not(np.isnan(theta_w))]
+theta_d = theta_d[np.logical_not(np.isnan(theta_d))]
 
 print(bn_i, bn_f, bn_w)
 
@@ -110,12 +113,10 @@ smooth_val = 1
 weg1 = np.ones_like(theta_i) / float(len(theta_i))
 weg2 = np.ones_like(theta_f) / float(len(theta_f))
 weg3 = np.ones_like(theta_w) / float(len(theta_w))
+weg4 = np.ones_like(theta_d) / float(len(theta_d))
 
-# plt.hist(smoothing.smooth(theta_i, smooth_val), range=(0,15), weights=weg1, bins=bn_i, density=1 )
-# plt.hist(smoothing.smooth(theta_f,smooth_val), range=(0,15), weights=weg2, bins=bn_f, density=1)
-# plt.hist(smoothing.smooth(theta_w, smooth_val), range=(0,15), weights=weg3, bins=bn_w, density=1)
-# plt.show()
-val = 0.08
+
+val = 0.12
 plt.figure(figsize=(10, 10))
 print(theta_i, len(theta_i))
 results, edges = np.histogram(theta_i, range=(0, 15), weights=weg1, bins=bn_i, density=1, )
@@ -143,7 +144,7 @@ def make_bars(
 
 font = 'Courier New'
 xs, ys = make_bars(edges[:-1], results * binWidth, val)
-plt.plot(xs, ys, color='black', linestyle='--', linewidth=2, label='1.0 au', )
+plt.plot(xs, ys, color='black', linestyle='--', linewidth=2, label=r'0.1 - 0.27 ${\rm au}$', )
 plt.ylabel('Probability Density', fontsize=30, fontname=font)
 plt.xlabel(r'$\alpha$-Proton Relative Temperature, $\theta_{\alpha p} = \frac{T_{\alpha}}{T_{p}}$', fontsize=24,
            fontname=font)
@@ -160,12 +161,18 @@ binWidth = edges[1] - edges[0]
 print(binWidth)
 xs, ys = make_bars(edges[:-1], results * binWidth, val)
 # plt.bar(edges[:-1], results*binWidth, binWidth)
-plt.plot(xs, ys, color='blue', linestyle='-', linewidth=2, label='Wind @ 1.0 au')
+plt.plot(xs, ys, color='blue', linestyle='-', linewidth=2, label=r'1.0 ${\rm au}$')
 
 results, edges = np.histogram(theta_w, range=(0, 14), weights=weg3, bins=bn_w, density=1)
 binWidth = edges[1] - edges[0]
 xs, ys = make_bars(edges[:-1], results * binWidth, val, )
-# plt.plot(xs, ys, color='blue', linestyle='-.', linewidth=2, label='1.0 au')
+plt.plot(xs, ys, color='gray', linestyle='-.', linewidth=2, label=r'Noise @ 1.0 ${\rm au}$')
+
+results, edges = np.histogram(theta_d, range=(0, 15), weights=weg4, bins=bn_w, density=1)
+binWidth = edges[1] - edges[0]
+xs, ys = make_bars(edges[:-1], results * binWidth, val, )
+#plt.bar(edges[:-1], results*binWidth, binWidth)
+plt.plot(xs, ys, color='green', linestyle='dotted', linewidth=2, label=r'Noise @ 0.1 - 0.27  ${\rm au}$')
 
 plt.legend(loc='upper right', prop={'size': 30})
 plt.show()

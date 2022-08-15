@@ -120,13 +120,13 @@ def temp_generate(
             val = random.random()
             if val > 0.5:
                 alpha_noise = alpha_noise + 1
-                proton_noise = 1 - proton_noise
+                proton_noise = proton_noise + 1
             else:
                 alpha_noise = 1 - alpha_noise
-                proton_noise = proton_noise + 1
+                proton_noise = 1 - proton_noise
 
-            psp_result['theta_ap'][i] = (psp_result['alpha_scalar_temp'][i]*alpha_noise / \
-                                         psp_result['proton_scalar_temp_1'][i]*proton_noise)
+            psp_result['theta_ap'][i] = (psp_result['alpha_scalar_temp'][i] / \
+                                         psp_result['proton_scalar_temp_1'][i])
 
         if solar_encounter[p]['np1'][i] == 0:
             psp_result['dens_ap'][i] = 0
@@ -156,9 +156,5 @@ def temp_generate(
 
         res_psp = psp_result
         res_wind = wind_result
-
-        for name in psp_result_keys:
-            print(name, len(res_psp[name]))
-        print('how?', len(res_psp['theta_ap']))
 
     return res_psp, res_wind

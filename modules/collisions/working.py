@@ -39,20 +39,24 @@ def fig_5(
         res['theta'][number] = np.loadtxt(sm.slash_check(path) + 'theta' + str(number) + file_type)
 
     L = len(res['theta'])
-    ls = ['-', '--', '-.', ':', ' ', '', '-', '--', '-.', ':', ' ', '']
+    ls = ['-', '-', '-.', '-', '-.', '--', '-.', ':', ':', '--', '-.', ':',]
     plt.figure(figsize=(10,10))
     j = 0
     for i in res['theta']:
-        plt.plot(res['radius'][i], res['theta'][i], linestyle=ls[j], linewidth=2)
+        label = round(float(i), 4)
+        plt.plot(res['radius'][i], res['theta'][i], linestyle=ls[j], linewidth=1, label=label)
         j=j+1
 
-    plt.tight_layout(pad=10 * 0.75)
+    plt.tight_layout(pad=10 * 0.8)
     plt.xticks(fontsize=24)
     plt.yticks(fontsize=24)
+    plt.legend(loc='upper right')
     plt.grid()
     plt.ylabel(r'$\theta_{\alpha p} = \frac{T_{\alpha}}{T_{p}}$', fontsize=30, fontname=font)
     plt.xlabel(r'Radius ${\rm au}$', fontsize=30, fontname=font)
     plt.show()
 
     return
+
+fig_5()
 
