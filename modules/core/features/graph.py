@@ -58,10 +58,16 @@ def colours_validate(
     return res
 
 
+def valid_styles_list(
+
+):
+    return list(list(line.lineStyles.keys()) + list(mark.MarkerStyle.markers.keys()))
+
+
 def validate_styles(
         line_style,
 ):
-    valid_styles = list(list(line.lineStyles.keys()) + list(mark.MarkerStyle.markers.keys()))
+    valid_styles = valid_styles_list
 
     if isinstance(line_style, str):
         if line_style in valid_styles:
@@ -248,13 +254,12 @@ def histogram(
         bin_number=const.bin_width,
         smooth_=const.smooth,
 ):
-
     if isinstance(y_data, dict):
         y_arg_ = {}
         y_ = {}
         for key in y_data.keys():
             y_arg_[key] = smoothing.smooth(y_data[key], smooth_)
-            bin_num = int(int((max(y_arg_[key]) - min(y_arg_[key])))/ bin_number)
+            bin_num = int(int((max(y_arg_[key]) - min(y_arg_[key]))) / bin_number)
             if bin_num == 0:
                 bin_num = 1
             hist = np.histogram(y_arg_[key], bins=bin_num)
@@ -279,4 +284,3 @@ def histogram(
           y_log, x_log, colours, style, line_width=width)
 
     return
-
