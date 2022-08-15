@@ -11,7 +11,7 @@ import generate_files as gen_files
 
 #vals = [1.0]
 #for val in vals:
-#    gen_files.encounter_generator(val, False)
+#    gen_files.encounter_generator(val, True)
 
 slash = fd.slash()
 parent_name = fd.dir_name(fd.dir_parent())
