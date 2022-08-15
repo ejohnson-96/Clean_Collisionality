@@ -8,19 +8,13 @@ from modules.core.system import config as sys_con
 def dir_parent(
 
 ):
-    directory = os.getcwd()
-    path = str(pathlib.Path(directory).parent)
-
-    return path
+    return str(pathlib.Path(os.getcwd()).parent)
 
 
 def dir_path(
 
 ):
-    directory = os.getcwd()
-    path = str(pathlib.Path(directory))
-
-    return path
+    return str(pathlib.Path(os.getcwd()))
 
 
 path_dir = dir_path()
@@ -32,7 +26,7 @@ def dir_make(
 ):
     if not isinstance(name, str):
         raise TypeError(
-            f"Directory name passed is not a string, "
+            f"Directory name {name} passed is not a string, "
             f"instead got {type(name)}"
         )
 
@@ -51,8 +45,7 @@ def dir_name(
         loc=None,
 ):
     if isinstance(loc, type(None)):
-        path = os.getcwd()
-        return os.path.basename(path)
+        return os.path.basename(os.getcwd())
     else:
         if not isinstance(loc, str):
             raise TypeError(
@@ -73,63 +66,68 @@ def dir_name(
 def file_list(
         loc=path_dir,
 ):
-    path = sm.slash_check(loc)
-    res = next(os.walk(path))[2]
-
-    return res
+    return next(os.walk(sm.slash_check(loc)))[2]
 
 
 def file_num(
         loc=path_dir,
 ):
-    L = file_list(loc)
-    res = len(L)
-
-    return res
+    return len(file_list(loc))
 
 
 def folder_list(
         loc=path_dir,
 ):
-    path = sm.slash_check(loc)
-    res = next(os.walk(path))[1]
-
-    return res
+    return next(os.walk(sm.slash_check(loc)))[1]
 
 
 def folder_num(
         loc=path_dir,
 ):
-    L = folder_list(loc)
-    res = len(L)
-
-    return res
+    return len(folder_list(loc))
 
 
 def dir_list(
         loc=path_dir,
 ):
-    path = sm.slash_check(loc)
-    res = os.listdir(path)
-
-    return res
+    return os.listdir(sm.slash_check(loc))
 
 
 def dir_num(
         loc=path_dir,
 ):
-    L = dir_list(loc)
-    res = len(L)
-
-    return res
+    return len(dir_list(loc))
 
 
 def slash(
 
 ):
-    windows_check = sys_con.windows_os()
-
-    if windows_check:
+    if sys_con.windows_os():
         return '\\'
     else:
         return '/'
+
+
+def file_ext(
+        loc=path_dir,
+):
+    if not isinstance(loc, str):
+        raise TypeError(
+            'Error: File location must be of type string,'
+            f' instead got type of {type(loc)}.'
+        )
+
+    return os.path.splitext(loc)[-1].lower()
+
+
+def all_file_type(
+        file_type,
+        loc=path_dir,
+):
+    loc = sm.slash_check(loc)
+    res = []
+    for root, dirs, files in os.walk(loc):
+        for file in files:
+            if file.endswith(file_type):
+                res.append(os.path.join(root, file))
+    return res

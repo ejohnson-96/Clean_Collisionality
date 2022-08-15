@@ -4,26 +4,29 @@ from modules.core.constants import system_const
 system_const()
 
 
-def capital_first_letter(
+def valid_char(
         string,
 ):
     if not isinstance(string, str):
         raise TypeError(
-            f"Argument passed is not a string, got {type(string)}"
+            f"Error: Argument {string} must be of type string, "
+            f"instead got type of {type(string)}"
         )
-    result = string.capitalize()
+    else:
+        return string
 
-    return result
+
+def capital_first_letter(
+        string,
+):
+    string = valid_char(string)
+    return string.capitalize()
 
 
 def capital_all_first_letter(
         string,
 ):
-    if not isinstance(string, str):
-        raise TypeError(
-            f"Argument passed is not a string, got {type(string)}"
-        )
-
+    string = valid_char(string)
     result = ' '.join(elem.capitalize() for elem in string.split())
 
     return result
@@ -32,37 +35,23 @@ def capital_all_first_letter(
 def capital_all_letter(
         string,
 ):
-    if not isinstance(string, str):
-        raise TypeError(
-            f"Argument passed is not a string, got {type(string)}"
-        )
+    string = valid_char(string)
 
-    result = string.upper()
-
-    return result
+    return string.upper()
 
 
 def lower_first_letter(
         string,
 ):
-    if not isinstance(string, str):
-        raise TypeError(
-            f"Argument passed is not a string, got {type(string)}"
-        )
+    string = valid_char(string)
 
-    result = string[0].lower() + string[1:]
-
-    return result
+    return string[0].lower() + string[1:]
 
 
 def lower_all_first_letter(
         string,
 ):
-    if not isinstance(string, str):
-        raise TypeError(
-            f"Argument passed is not a string, got {type(string)}"
-        )
-
+    string = valid_char(string)
     result = ' '.join(elem.lower() for elem in string.split())
 
     return result
@@ -71,42 +60,25 @@ def lower_all_first_letter(
 def lower_all_letter(
         string,
 ):
-    if not isinstance(string, str):
-        raise TypeError(
-            f"Argument passed is not a string, got {string.type}"
-        )
+    string = valid_char(string)
 
-    result = string.lower()
-
-    return result
+    return string.lower()
 
 
 def remove_end(
         string,
 ):
-    if not isinstance(string, str):
-        raise ValueError(
-            "Argument passed is a not string, instead "
-            f" got {type(string)}."
-        )
-    l = len(string)
-    result = string[:l - 1]
+    string = valid_char(string)
 
-    return result
+    return string[:len(string) - 1]
 
 
 def remove_begin(
         string,
 ):
-    if not isinstance(string, str):
-        raise ValueError(
-            "Argument passed is a not string, instead "
-            f" got {type(string)}."
-        )
+    string = valid_char(string)
 
-    result = string[1:]
-
-    return result
+    return string[1:]
 
 
 def replace_char(
@@ -114,60 +86,40 @@ def replace_char(
         character,
         replacement,
 ):
-    arg_name_ = [string, character, replacement]
-    for arg_ in arg_name_:
-        if not isinstance(arg_, str):
-            raise ValueError(
-                f"Argument {arg_}, is not of string type, "
-                f"instead got type {type(arg_)}."
-            )
+    string = valid_char(string)
+    character = valid_char(character)
+    replacement = valid_char(replacement)
 
     if character in string:
-        res = string.replace(character, replacement)
+        return string.replace(character, replacement)
     else:
-        raise TypeError(
-            f"Character {character}, does not appear in the "
-            f"string provided, {string}."
+        raise ValueError(
+            f"Error: The character provided, {character}, does not "
+            f"appear in the provided string, {string}."
         )
-
-    return res
 
 
 def remove_char(
         string,
         character,
 ):
-    res = replace_char(string, character, '')
-
-    return res
+    return replace_char(string, character, '')
 
 
 def add_space_front(
         string,
 ):
-    if not isinstance(string, str):
-        raise ValueError(
-            "Argument passed is a not string, instead "
-            f" got {string.type}."
-        )
+    string = valid_char(string)
 
-    res = string + ' '
-
-    return res
+    return string + ' '
 
 
 def add_space_end(
         string,
 ):
-    if not isinstance(string, str):
-        raise ValueError(
-            "Argument passed is a not string, instead "
-            f" got {string.type}."
-        )
+    string = valid_char(string)
 
-    res = ' ' + string
-
-    return res
+    return ' ' + string
 
 
 def nato_alphabet(
@@ -179,11 +131,7 @@ def nato_alphabet(
     symbols = system_const.symbols
     nato_alphabet = system_const.nato
 
-    if not isinstance(string, str):
-        raise ValueError(
-            "Argument passed is a not string, instead "
-            f" got {string.type}."
-        )
+    string = valid_char(string)
 
     phon_test = string.split()
 
@@ -286,21 +234,16 @@ def nato_alphabet(
             first = False
 
     if _list:
-        res_arg_ = res_list
+        return res_list
     else:
-        res_arg_ = capital_all_first_letter(res)
-
-    return res_arg_
+        return capital_all_first_letter(res)
 
 
 def validate_case_entry(
         string,
         single=False,
 ):
-    if not isinstance(string, str):
-        raise TypeError(
-            f"Argument passed is not a string, got {type(string)}"
-        )
+    string = valid_char(string)
 
     if single:
         if len(string) > 1:
@@ -332,4 +275,3 @@ def is_lower(
     res = char.islower()
 
     return res
-

@@ -1,4 +1,39 @@
 import math
+import random
+
+
+def valid_num(
+        num,
+):
+    if not isinstance(num, (int, float)):
+        raise TypeError(
+            f"Error: Argument {num} is not of type int or float, "
+            f"instead got type of {type(num)}."
+        )
+    return num
+
+
+def valid_int(
+        num
+):
+    if not isinstance(num, int):
+        raise TypeError(
+            f"Error: Argument {num} is not of type int or float, "
+            f"instead got type of {type(num)}."
+        )
+    else:
+        return num
+
+
+def valid_float(
+        num
+):
+    if not isinstance(num, (int, float)):
+        raise TypeError(
+            f"Error: Argument {num} is not of type int or float, "
+            f"instead got type of {type(num)}."
+        )
+    return num
 
 
 def add(
@@ -17,14 +52,9 @@ def add(
         m=0,
 ):
     for arg_name in (a, b, c, d, e, f, g, h, i, j, k, l, m):
-        if not isinstance(arg_name, (int, float)):
-            raise TypeError(
-                f"Argument '{arg_name}'must be an integer or float."
-            )
+        arg_name = valid_num(arg_name)
 
-    res = a + b + c + d + e + f + g + h + i + j + k + l + m
-
-    return res
+    return a + b + c + d + e + f + g + h + i + j + k + l + m
 
 
 def sub(
@@ -43,14 +73,9 @@ def sub(
         m=0,
 ):
     for arg_name in (a, b, c, d, e, f, g, h, i, j, k, l, m):
-        if not isinstance(arg_name, (int, float)):
-            raise TypeError(
-                f"Argument '{arg_name}'must be an integer or float."
-            )
+        arg_name = valid_num(arg_name)
 
-    res = a - b - c - d - e - f - g - h - i - j - k - l - m
-
-    return res
+    return a - b - c - d - e - f - g - h - i - j - k - l - m
 
 
 def multi(
@@ -91,20 +116,15 @@ def div(
         a,
         b,
 ):
-    for arg_name in (a, b):
-        if not isinstance(arg_name, (int, float)):
-            raise TypeError(
-                f"Argument '{arg_name}'must be an integer or float."
-            )
+    a = valid_num(a)
+    b = valid_num(b)
 
     if b == 0:
         raise ValueError(
-            "Second argument cannot be zero dummy."
+            "Error: Second argument cannot be zero dummy."
         )
 
-    res = a / b
-
-    return res
+    return a / b
 
 
 def dot_product(
@@ -113,12 +133,8 @@ def dot_product(
         theta=False,
         radians=False
 ):
-    for arg_name in (a, b):
-        if not isinstance(arg_name, (int, float, tuple, list)):
-            raise TypeError(
-                f"Argument '{arg_name}'must be an integer, float or"
-                f" a vector."
-            )
+    a = valid_num(a)
+    b = valid_num(b)
 
     if isinstance(a, (int, float)) and isinstance(b, (int, float)):
         if not isinstance(theta, bool):
@@ -194,43 +210,28 @@ def cross_product(
 def deg_rad(
         angle,
 ):
-    if not isinstance(angle, (int, float)):
-        raise ValueError(
-            "Angle must be either an integer or float, instead "
-            f"got {type(angle)}."
-        )
+    angle = valid_num(angle)
 
-    arg_ = angle * math.pi / 180
-
-    return arg_
+    return angle * math.pi / 180
 
 
 def rad_deg(
         angle,
 ):
-    if not isinstance(angle, (int, float)):
-        raise ValueError(
-            "Angle must be either an integer or float, instead "
-            f"got {type(angle)}."
-        )
+    angle = valid_num(angle)
 
-    arg_ = angle * 180 / math.pi
-
-    return arg_
+    return angle * 180 / math.pi
 
 
 def pow(
         x,
         n=2,
 ):
-    for arg_name in (x, n):
-        if not isinstance(arg_name, (int, float)):
-            raise TypeError(
-                f"Argument '{arg_name}'must be an integer or float."
-            )
+    x = valid_num(x)
+    n = valid_num(n)
 
     if n == 0:
-        res = 1
+        return 1
     else:
 
         if x < 0:
@@ -239,13 +240,9 @@ def pow(
                     'Error: Only non-even roots can have a negative argument.'
                 )
             else:
-                res = x ** n
+                return x ** n
         else:
-            res = x ** n
-
-        res = x ** n
-
-    return res
+            return x ** n
 
 
 def quad_root(
@@ -276,12 +273,7 @@ def quad_root(
 def is_even(
         number,
 ):
-    if not isinstance(number, (int, float)):
-        raise TypeError(
-            "Error: Argument must be a number of type "
-            " integer or of type float, insteat got "
-            f"type {type(number)}."
-        )
+    number = valid_num(number)
 
     if number % 2 == 0:
         return True
@@ -298,3 +290,13 @@ def is_odd(
         return False
 
 
+def dice_roll(
+        dice_num=1,
+):
+    dice_num = valid_num(dice_num)
+    res = []
+    for i in range(dice_num):
+        roll = random.randint(1, 6)
+        res.append(roll)
+
+    return res

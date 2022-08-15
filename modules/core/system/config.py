@@ -1,8 +1,10 @@
 import sys
+from modules.core.variables.string_man import valid_string
 
 windows = 'Windows'
-mac  = 'Mac OS'
+mac = 'Mac OS'
 linux = 'Linux'
+
 
 def get_platform():
     platforms = {
@@ -20,9 +22,7 @@ def get_platform():
 def windows_os(
 
 ):
-    os = get_platform()
-
-    if os == windows:
+    if get_platform() == windows:
         return True
     else:
         return False
@@ -31,9 +31,7 @@ def windows_os(
 def mac_os(
 
 ):
-    os = get_platform()
-
-    if os == mac:
+    if get_platform() == mac:
         return True
     else:
         return False
@@ -42,9 +40,8 @@ def mac_os(
 def linux_os(
 
 ):
-    os = get_platform()
-
-    if os == linux:
+    if get_platform() == linux:
         return True
     else:
         return False
+

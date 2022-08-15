@@ -41,8 +41,6 @@ def initialise_constants(
 ):
     const()
     system_const()
-    res = 'Note: Constant initialisation successful.'
-
-    return res
+    return 'Note: Constant initialisation successful.'
 
 

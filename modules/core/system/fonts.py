@@ -24,28 +24,20 @@ def font_names(
 
 ):
     fonts = font_list()
-    res = fonts['name']
-
-    return res
+    return fonts['name']
 
 
 def font_dir(
 
 ):
     fonts = font_list()
-    res = fonts['dir']
-
-    return res
+    return fonts['dir']
 
 
 def check_font_valid(
         font,
 ):
-    if not isinstance(font, str):
-        raise ValueError(
-            'Error: Argument must be a string, instead '
-            f'got type {type(font)}'
-        )
+    font = sm.valid_string(font)
 
     valid_fonts = font_names()
 
@@ -55,34 +47,25 @@ def check_font_valid(
     input_font = cm.lower_all_letter(font)
 
     if input_font in valid_fonts:
-        res = True
+        return True
     else:
-        res = False
-
-    return res
+        return False
 
 
 def load_font(
         loc,
 ):
-    if not isinstance(loc, str):
-        raise TypeError(
-            'Error: Argument must be a string, instead '
-            f'got type {type(loc)}'
-        )
-
+    loc = sm.valid_string(loc)
     valid_file = 'ttf'
-
     file_check = loc.split('.')
 
-    ext = cm.lower_all_letter(file_check[-1])
-
-    if ext == valid_file:
+    if cm.lower_all_letter(file_check[-1]) == valid_file:
         font_manager.fontManager.addfont(loc)
     else:
         raise ValueError(
-            'Error: Directory location provided does not appear'
-            ' to be the correct file type.'
+            'Error: Directory location provided does not appear '
+            'to be the correct file type, instead got '
+            f'type {file_check[-1]}'
         )
 
     return

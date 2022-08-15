@@ -41,3 +41,4 @@ def navigation(
         west = west + 1
 
     return key_press
+

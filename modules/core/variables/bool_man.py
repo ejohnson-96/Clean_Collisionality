@@ -1,25 +1,21 @@
 
 def valid_bool(
         a,
-        b,
 ):
-    if isinstance(a, bool) and isinstance(b, bool):
-        return a, b
-    else:
+    if not isinstance(a, bool):
         raise ValueError(
-            "Error: Only boolean arguments are allowed,"
-            f" instead for a, got type {type(a)} and for "
-            f"b got type {type(b)}."
+            f"Error: Argument {a} needs to be a boolean type, "
+            f"instead type of {type(a)}."
         )
+    else:
+        return a
 
 
 def and_(
         a,
         b,
 ):
-    a, b = valid_bool(a, b)
-
-    if a == 1 and b == 1:
+    if valid_bool(a) == 1 and valid_bool(b) == 1:
         return True
     else:
         return False
@@ -29,9 +25,7 @@ def nand_(
         a,
         b,
 ):
-    a, b = valid_bool(a, b)
-
-    if a == 1 and b == 1:
+    if valid_bool(a) == 1 and valid_bool(b) == 1:
         return False
     else:
         return True
@@ -41,9 +35,7 @@ def or_(
         a,
         b,
 ):
-    a, b = valid_bool(a, b)
-
-    if a == 1 or b == 1:
+    if valid_bool(a) == 1 or valid_bool(b) == 1:
         return True
     else:
         return False
@@ -53,9 +45,7 @@ def xor_(
         a,
         b,
 ):
-    a, b = valid_bool(a, b)
-
-    if a != b:
+    if valid_bool(a) != valid_bool(b):
         return True
     else:
         return False
@@ -64,12 +54,7 @@ def xor_(
 def not_(
         a,
 ):
-    if not isinstance(a, bool):
-        raise TypeError(
-            f"Error: Only boolean values allowed, instead"
-            f" got argument of type {type(a)}."
-        )
-
+    a = valid_bool(a)
     return not a
 
 
@@ -77,7 +62,8 @@ def nor_(
         a,
         b,
 ):
-    a, b = valid_bool(a, b)
+    a = valid_bool(a)
+    b = valid_bool(b)
 
     if (a == 0) and (b == 0):
         return True
@@ -89,8 +75,9 @@ def nor_(
         return True
     else:
         raise ValueError(
-            f"Error: Logic cannot be determined, arguments passed are {a}"
-            f" and {b} of types {type(a)} and {type(b)} respectively."
+            f"Error: Logic cannot be determined, arguments passed "
+            f"are {a} and {b} of types {type(a)} and {type(b)} "
+            "respectively."
         )
 
 
@@ -98,9 +85,7 @@ def xnor_(
         a,
         b,
 ):
-    a, b = valid_bool(a, b)
-
-    if (a == b):
+    if valid_bool(a) == valid_bool(b):
         return True
     else:
         return False
