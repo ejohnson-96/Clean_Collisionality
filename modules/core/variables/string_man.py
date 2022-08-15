@@ -87,7 +87,7 @@ def slash_check(
     string = valid_string(string)
 
     if string.endswith("/") or string.endswith(str("\\")):
-        res = string
+        return string
     else:
         if '/' in string:
             return jwos(string, '/')
