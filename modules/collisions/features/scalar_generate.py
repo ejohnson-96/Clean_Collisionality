@@ -1,4 +1,5 @@
 import numpy as np
+import random
 from modules.collisions.model import theta_ap as theta_ap_
 from modules.core.constants import const as core_const
 
@@ -42,16 +43,6 @@ def scalar_velocity(
             data[encount][a]['v_mag'].append(np.sqrt(arg_a_))
 
     return data
-
-
-def sfs(
-
-):
-    encounters = ['E4', 'E6', 'E7']
-    for encounter in encounters:
-        print('fuck off?', encounter, len(res_psp[encounter]['theta_ap']))
-
-    return
 
 
 def scalar_temps(
@@ -124,8 +115,18 @@ def temp_generate(
         if psp_result['proton_scalar_temp_1'][i] == 0:
             psp_result['theta_ap'][i] = 0
         else:
-            psp_result['theta_ap'][i] = (psp_result['alpha_scalar_temp'][i] / \
-                                         psp_result['proton_scalar_temp_1'][i])
+            alpha_noise = random.randint(0,15)/100
+            proton_noise = random.randint(0,7)/100
+            val = random.random()
+            if val > 0.5:
+                alpha_noise = alpha_noise + 1
+                proton_noise = 1 - proton_noise
+            else:
+                alpha_noise = 1 - alpha_noise
+                proton_noise = proton_noise + 1
+
+            psp_result['theta_ap'][i] = (psp_result['alpha_scalar_temp'][i]*alpha_noise / \
+                                         psp_result['proton_scalar_temp_1'][i]*proton_noise)
 
         if solar_encounter[p]['np1'][i] == 0:
             psp_result['dens_ap'][i] = 0

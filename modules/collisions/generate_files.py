@@ -5,7 +5,6 @@ from constants import *
 
 from modules.core.time import tictoc as stopwatch, convert as converter
 from modules.core.constants import initialise_constants
-from modules.core.validate import input as inpt
 from modules.core.variables import num_man as nm, string_man as sm
 from modules.core.features import graph as graph
 from modules.core.loadsave import file_dir as fdir
@@ -109,7 +108,7 @@ def encounter_generator(
             g = 1
             while g > 0:
                 enc_input = input('Please enter an encounter:')
-                if inpt.validate_input_number(enc_input):
+                if nm.validate_input_number(enc_input):
                     if int(enc_input) in valid_enc:
                         encount = int(enc_input)
                         g = 0
@@ -169,6 +168,7 @@ def encounter_generator(
     # Generate temperatures and velocity magnitudes
     print('Generating velocity magnitudes and temperature file... \n')
     mm_data = sc_gen.scalar_velocity(mm_data)
+
     psp_temps, wind_temps = sc_gen.scalar_temps(mm_data, sc_data)
 
 
