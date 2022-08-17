@@ -208,14 +208,10 @@ def encounter_generator(
             wind_scalar_temps[value] = []
 
     for key in psp_scalar_temps.keys():
-        print(psp_temps.keys())
         for encount in psp_temps.keys():
-            print(encount, key)
-            print(len(psp_temps[encount][key]))
             for i in range(len(psp_temps[encount][key])):
                 psp_scalar_temps[key].append(psp_temps[encount][key][i])
 
-        print(len(psp_scalar_temps[key]))
     for key in wind_scalar_temps.keys():
         for encount in wind_temps.keys():
             for i in range(len(wind_temps[encount][key])):
@@ -278,7 +274,7 @@ def encounter_generator(
                     spc_data[y][z].append(sc_data[encount][y][z][w])
 
     print('Scrubbing data...')
-    #solar_data, errors, spc_data = scrub.scrub_data(solar_data, errors, spc_data)
+    solar_data, errors, spc_data = scrub.scrub_data(solar_data, errors, spc_data, error_files)
 
     spc_data[enc.sc_names[2]] = lat_lon.latlong_psp(spc_data[enc.sc_names[2]])
     spc_data[enc.sc_names[1]] = lat_lon.latlong_wind(spc_data[enc.sc_names[1]])
@@ -313,6 +309,7 @@ def encounter_generator(
             np.savetxt(loc, temp_files[i])
 
     return
+
 
 
 def uncertain(

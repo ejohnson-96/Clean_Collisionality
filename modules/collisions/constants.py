@@ -106,8 +106,8 @@ def const(
 
     const.data_units = {}
 
-    const.data_units[0] = [0, 1, 1, 2, 2, 2, 3, 3, 3, 2, 4, 4, 4, 4]
-    const.data_units[1] = [0, 1, 2, 2, 2, 3, 3, 3, 4, 4]
+    const.data_units[0] = [0, 1, 1, 2, 2, 2, 3, 3, 3, 2, 4, 4, 4, 4, 2]
+    const.data_units[1] = [0, 1, 2, 2, 2, 3, 3, 3, 4, 4, 2]
 
     const.error_units = {}
 
